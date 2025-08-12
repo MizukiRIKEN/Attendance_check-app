@@ -146,7 +146,7 @@ def main():
     
     st.markdown("---")
     # チェックインログをアップロードするボタン
-    st.write("チェックインログをアップロードできます。")
+    st.write("チェックインログをアップロードできます。(運用テスト中)")
     uploaded_file = st.file_uploader("チェックインログをアップロード", type=["csv"])
     if uploaded_file is not None:
         try:
