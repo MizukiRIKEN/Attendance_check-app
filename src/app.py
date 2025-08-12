@@ -52,6 +52,8 @@ def show_checkin_log(CHECKIN_FILE):
         st.write(log_df)   
     else:
         st.error("チェックインログが見つかりません。")
+        
+    
 #%%----
 def main():
     st.title("NuSym25")
@@ -60,7 +62,7 @@ def main():
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
         options=MEETING_TYPES,
-        index=0  # デフォルトで最初のオプションを選択
+        index=1  # デフォルトで最初のオプションを選択
     )
     
     REGISTERED_HEAD = "Registered_"
@@ -86,16 +88,17 @@ def main():
         with open(CHECKIN_FILE, "w") as f:
             f.write("ID,Name,Time\n")
     
-    
-    st.write(f"登録者リストファイル: [{REGISTERED_FILE}]")
-    st.write(f"チェックイン記録ファイル: [{CHECKIN_FILE}]")
-    
+   
+    st.markdown(f'<span style="color:blue"> 登録者リストファイル: [{REGISTERED_FILE}]</span>', unsafe_allow_html=True)
+    st.markdown(f'<span style="color:blue"> チェックイン記録ファイル: [{CHECKIN_FILE}]</span>', unsafe_allow_html=True)
+    st.markdown("---")
+
 
     st.title("✅ 出席確認アプリ")
     st.write(f"参加者リストファイル: [{REGISTERED_FILE}]")
 
     # 入力フォーム
-    input_id = st.text_input("参加者IDを入力してください")
+    input_id = st.text_input("参加者IDを入力してください", placeholder="例: 12")
 
 
     input_id = input_id.strip()  # 前後の空白を削除
@@ -124,9 +127,45 @@ def main():
         else:
             st.warning("IDを入力してください。")
 
+    st.markdown("---")
+
     show_not_checked_in_participants(df, CHECKIN_FILE)
 
     show_checkin_log(CHECKIN_FILE)        
+    
+    
+    st.markdown("---")
+    # チェックインログのダウンロードボタン
+    st.write("チェックインログをCSV形式でダウンロードできます。")
+    st.download_button(
+        label=f"{CHECKIN_FILE}をダウンロード",
+        data=open(CHECKIN_FILE, "rb").read(),
+        file_name=CHECKIN_FILE,
+        mime="text/csv"
+    )
+    
+    st.markdown("---")
+    # チェックインログをアップロードするボタン
+    st.write("チェックインログをアップロードできます。")
+    uploaded_file = st.file_uploader("チェックインログをアップロード", type=["csv"])
+    if uploaded_file is not None:
+        try:
+            # アップロードされたCSVファイルを読み込む
+            uploaded_df = pd.read_csv(uploaded_file)
+            st.write("アップロードされたチェックインログ:")
+            st.write(uploaded_df)
+            
+            # チェックインログを保存
+            with open(CHECKIN_FILE, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success(f"チェックインログが保存されました: {CHECKIN_FILE}")
+        except Exception as e:
+            st.error(f"ファイルの読み込みに失敗しました: {e}")
+    else:
+        st.info("アップロードするチェックインログファイルを選択してください。") 
+    
+    
+    
 
 #%%----
 
