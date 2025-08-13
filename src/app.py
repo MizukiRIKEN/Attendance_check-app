@@ -36,7 +36,7 @@ def show_not_checked_in_participants(df,CHECKIN_FILE):
         st.info("全ての参加者がチェックイン済みです。")
     else:
         st.markdown("##### 未チェックインの参加者ID:")
-        st.write(f"残り {len(not_checked_in)} 人")
+        st.markdown(f"##### 残り {len(not_checked_in)} 人")
         st.write(f" {not_checked_in_sorted}")
 
     
@@ -136,7 +136,8 @@ def main():
    
     show_not_checked_in_participants(df, CHECKIN_FILE)
 
-    
+   
+    st.markdown("---") 
     # --- チェックイン記録から削除する機能 ---
     if os.path.exists(CHECKIN_FILE):
         log_df = pd.read_csv(CHECKIN_FILE)
@@ -160,7 +161,8 @@ def main():
     st.markdown("---")
     
     st.markdown("##### 画面のリロード")
-    st.button("画面をリロード", on_click=st.rerun)  # 画面をリロードするボタン
+    if st.button("画面をリロード"):
+        st.rerun()  # 画面をリロードするボタン
     
     st.markdown("---")
     # チェックインログのダウンロードボタン
