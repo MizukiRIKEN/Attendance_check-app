@@ -100,7 +100,7 @@ def main():
     # 入力フォームi
     st.markdown("#### 出席登録する参加者のIDを入力してください")
     input_id = st.text_input("参加者IDを入力してください", placeholder="例: 12")
-    comment = st.text_input("コメント（任意）", placeholder="例: 遅刻、代理出席 など")  # ← コメント欄を追加
+    comment = st.text_input("コメント（任意）", placeholder="例: 領収書 など")  # ← コメント欄を追加
 
   
 
@@ -157,7 +157,7 @@ def main():
                         st.warning(f"ID {del_id} の記録は見つかりませんでした。")
                 else:
                     st.warning("正しいIDを入力してください。")
-    #st.rerun()
+                    
     st.markdown("---")
     
     st.markdown("##### 画面のリロード")
@@ -165,6 +165,8 @@ def main():
         st.rerun()  # 画面をリロードするボタン
     
     st.markdown("---")
+    
+    
     # チェックインログのダウンロードボタン
     now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
     st.markdown("##### チェックインログをCSV形式でダウンロードできます。")
@@ -175,31 +177,36 @@ def main():
         mime="text/csv"
     )
     
-    st.markdown("---")
-    # チェックインログをアップロードするボタン
- #   st.write("チェックインログをアップロードできます。(運用テスト中)")
- #   uploaded_file = st.file_uploader("チェックインログをアップロード", type=["csv"])
- #   if uploaded_file is not None:
- #       try:
- #           # アップロードされたCSVファイルを読み込む
- #           uploaded_df = pd.read_csv(uploaded_file)
- #           st.write("アップロードされたチェックインログ:")
- #           st.write(uploaded_df)
- #           
- #           # チェックインログを保存
- #           with open(CHECKIN_FILE, "wb") as f:
- #               f.write(uploaded_file.getbuffer())
- #           st.success(f"チェックインログが保存されました: {CHECKIN_FILE}")
- #       except Exception as e:
- #           st.error(f"ファイルの読み込みに失敗しました: {e}")
- #   else:
- #       st.info("アップロードするチェックインログファイルを選択してください。") 
+    # --- チェックインCSVの複製＋未チェックインリスト追記 ---
+    if os.path.exists(CHECKIN_FILE):
+        # チェックインCSVの内容を取得
+        with open(CHECKIN_FILE, "r") as f:
+            checkin_csv = f.read()
+        # 未チェックインIDリストを取得
+        registered_ids = set(df['ID'].astype(str).str.strip())
+        checked_in_ids = set(pd.read_csv(CHECKIN_FILE, usecols=[0], names=["ID"])['ID'].astype(str).str.strip())
+        not_checked_in = registered_ids - checked_in_ids
+        not_checked_in_sorted = sorted([int(x) for x in not_checked_in])
+        
+        # 未チェックイン者のIDと名前を抽出
+        not_checked_df = df[df['ID'].isin(not_checked_in_sorted)][['ID', 'Name']]
+        # 末尾に追記するテキスト
+        append_text = "\n\n未チェックイン者リスト:\n"
+        append_text += not_checked_df.to_csv(index=False, header=False)
+        # 複製データ
+        duplicated_csv = checkin_csv + append_text
+
+        st.download_button(
+            label=f"{CHECKIN_FILE}＋未チェックインリストをダウンロード",
+            data=duplicated_csv,
+            file_name=f"{CHECKIN_HEAD}{meeting_type}_{now_str}_with_not_checked.csv",
+            mime="text/csv"
+        )
     
+    st.markdown("---")
     
     
 
 #%%----
-
-
 if __name__ == "__main__":
     main()
