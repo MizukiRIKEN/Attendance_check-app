@@ -136,33 +136,34 @@ def main():
     
     st.markdown("---")
     # チェックインログのダウンロードボタン
+    now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
     st.write("チェックインログをCSV形式でダウンロードできます。")
     st.download_button(
         label=f"{CHECKIN_FILE}をダウンロード",
         data=open(CHECKIN_FILE, "rb").read(),
-        file_name=CHECKIN_FILE,
+        file_name=f"{CHECKIN_HEAD}{meeting_type}_{now_str}.csv",
         mime="text/csv"
     )
     
     st.markdown("---")
     # チェックインログをアップロードするボタン
-    st.write("チェックインログをアップロードできます。(運用テスト中)")
-    uploaded_file = st.file_uploader("チェックインログをアップロード", type=["csv"])
-    if uploaded_file is not None:
-        try:
-            # アップロードされたCSVファイルを読み込む
-            uploaded_df = pd.read_csv(uploaded_file)
-            st.write("アップロードされたチェックインログ:")
-            st.write(uploaded_df)
-            
-            # チェックインログを保存
-            with open(CHECKIN_FILE, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success(f"チェックインログが保存されました: {CHECKIN_FILE}")
-        except Exception as e:
-            st.error(f"ファイルの読み込みに失敗しました: {e}")
-    else:
-        st.info("アップロードするチェックインログファイルを選択してください。") 
+ #   st.write("チェックインログをアップロードできます。(運用テスト中)")
+ #   uploaded_file = st.file_uploader("チェックインログをアップロード", type=["csv"])
+ #   if uploaded_file is not None:
+ #       try:
+ #           # アップロードされたCSVファイルを読み込む
+ #           uploaded_df = pd.read_csv(uploaded_file)
+ #           st.write("アップロードされたチェックインログ:")
+ #           st.write(uploaded_df)
+ #           
+ #           # チェックインログを保存
+ #           with open(CHECKIN_FILE, "wb") as f:
+ #               f.write(uploaded_file.getbuffer())
+ #           st.success(f"チェックインログが保存されました: {CHECKIN_FILE}")
+ #       except Exception as e:
+ #           st.error(f"ファイルの読み込みに失敗しました: {e}")
+ #   else:
+ #       st.info("アップロードするチェックインログファイルを選択してください。") 
     
     
     
