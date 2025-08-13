@@ -14,7 +14,7 @@ def diffrentiate_checkin(cid,CHECKIN_FILE):
     log_df = pd.read_csv(CHECKIN_FILE)
     fuser = log_df[log_df['ID'] == int(cid)]
     if fuser.empty:
-        st.write(f"ID {cid} 新チェックイン")
+        #st.write(f"ID {cid} 新チェックイン")
         return True
     else:
         st.error(f"ID {cid} : {fuser} チェックイン済み")
@@ -35,8 +35,8 @@ def show_not_checked_in_participants(df,CHECKIN_FILE):
     if not not_checked_in:
         st.info("全ての参加者がチェックイン済みです。")
     else:
-        st.write("未チェックインの参加者ID:")
-        st.write(f"Rest {len(not_checked_in)} persons:")
+        st.markdown("##### 未チェックインの参加者ID:")
+        st.write(f"残り {len(not_checked_in)} 人")
         st.write(f" {not_checked_in_sorted}")
 
     
@@ -86,7 +86,7 @@ def main():
         st.write(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
         st.write("新しいチェックインを開始します。")
         with open(CHECKIN_FILE, "w") as f:
-            f.write("ID,Name,Time\n")
+            f.write("ID,Name,Comment,Time\n")
     
    
     st.markdown(f'<span style="color:blue"> 登録者リストファイル: [{REGISTERED_FILE}]</span>', unsafe_allow_html=True)
@@ -97,9 +97,12 @@ def main():
     st.title("✅ 出席確認アプリ")
     st.write(f"参加者リストファイル: [{REGISTERED_FILE}]")
 
-    # 入力フォーム
+    # 入力フォームi
+    st.markdown("#### 出席登録する参加者のIDを入力してください")
     input_id = st.text_input("参加者IDを入力してください", placeholder="例: 12")
+    comment = st.text_input("コメント（任意）", placeholder="例: 遅刻、代理出席 など")  # ← コメント欄を追加
 
+  
 
     input_id = input_id.strip()  # 前後の空白を削除
 
@@ -111,7 +114,7 @@ def main():
         
             if not user.empty:
                 name = user.iloc[0]['Name']
-                st.write(f"[{input_id}] 参加者: {name} さん")
+                st.write(f" 参加者: [{input_id}]　{name} さん")
             
                 if diffrentiate_checkin(input_id,CHECKIN_FILE):
                 
@@ -119,7 +122,7 @@ def main():
                     # チェックイン記録を保存
                     with open(CHECKIN_FILE, "a") as f:
                         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
-                        f.write(f"{input_id},{name},{now_str}\n")
+                        f.write(f"{input_id},{name},{comment},{now_str}\n")
                 else:
                     st.warning(f"{name} さんはすでにチェックイン済みです。")
             else:
@@ -128,16 +131,41 @@ def main():
             st.warning("IDを入力してください。")
 
     st.markdown("---")
-
+    
+    show_checkin_log(CHECKIN_FILE)        
+   
     show_not_checked_in_participants(df, CHECKIN_FILE)
 
-    show_checkin_log(CHECKIN_FILE)        
     
+    # --- チェックイン記録から削除する機能 ---
+    if os.path.exists(CHECKIN_FILE):
+        log_df = pd.read_csv(CHECKIN_FILE)
+        if not log_df.empty:
+            st.markdown("#### ❌ 間違ったチェックインを削除")
+            del_id = st.text_input("削除したい参加者IDを入力してください", key="delete_id")
+            if st.button("このIDのチェックイン記録を削除"):
+                if del_id and del_id.isdigit():
+                    before = len(log_df)
+                    log_df = log_df[log_df['ID'] != int(del_id)]
+                    after = len(log_df)
+                    if before != after:
+                        log_df.to_csv(CHECKIN_FILE, index=False)
+                        st.success(f"ID {del_id} のチェックイン記録を削除しました。")
+                        #st.rerun()
+                    else:
+                        st.warning(f"ID {del_id} の記録は見つかりませんでした。")
+                else:
+                    st.warning("正しいIDを入力してください。")
+    #st.rerun()
+    st.markdown("---")
+    
+    st.markdown("##### 画面のリロード")
+    st.button("画面をリロード", on_click=st.rerun)  # 画面をリロードするボタン
     
     st.markdown("---")
     # チェックインログのダウンロードボタン
     now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
-    st.write("チェックインログをCSV形式でダウンロードできます。")
+    st.markdown("##### チェックインログをCSV形式でダウンロードできます。")
     st.download_button(
         label=f"{CHECKIN_FILE}をダウンロード",
         data=open(CHECKIN_FILE, "rb").read(),
