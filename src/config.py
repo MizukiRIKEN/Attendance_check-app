@@ -1,11 +1,18 @@
 #リストを選択する
 MEETING_TYPES = [
     "Session",
+    "Banquet",
+    "Excursion",
     "Ropeway",
-    "Dinner",
     "Goto",
     "Return"
 ]
+
+ 
+REGISTERED_HEAD = "Registered_"
+CHECKIN_HEAD = "Checkin_"
+   
+
 
 
 Personal_info = {
@@ -21,12 +28,12 @@ Personal_info = {
 }
 
 dtype_dict = {
-    'ID': int,
+    'ID': str,
     'Name': str,
     'Session': str,
-    'Banquet': bool,
-    'Excursion': bool,
-    'Ropeway': bool,
+    'Banquet': str,
+    'Excursion': str,
+    'Ropeway': str,
     'Special food': str,
     'Time': str,
     'Comment': str

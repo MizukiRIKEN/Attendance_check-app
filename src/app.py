@@ -64,9 +64,6 @@ def main():
         options=MEETING_TYPES,
         index=1  # デフォルトで最初のオプションを選択
     )
-    
-    REGISTERED_HEAD = "Registered_"
-    CHECKIN_HEAD = "Checkin_"
     REGISTERED_FILE = REGISTERED_HEAD + meeting_type + ".csv"
     CHECKIN_FILE = CHECKIN_HEAD + meeting_type + ".csv"
     st.write(f" {meeting_type} を選択中")
