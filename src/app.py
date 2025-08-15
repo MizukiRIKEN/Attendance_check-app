@@ -202,7 +202,14 @@ def main():
     
     st.markdown("---")
     
-    
+    st.markdown("##### 登録者のIDを検索")
+    input_name = st.text_input("Name")
+    if input_name:
+        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+        if not user.empty:
+            st.write(user)
+        else:
+            st.warning("未登録の名前です。")
 
 #%%----
 if __name__ == "__main__":
