@@ -4,7 +4,7 @@ from types import *  # 型定義をインポート
 import pandas as pd
 from datetime import datetime
 import os
-from config import MEETING_TYPES
+from config import MEETING_TYPES, REGISTERED_HEAD, CHECKIN_HEAD, Personal_info, dtype_dict
 
 #%%----  
 def diffrentiate_checkin(cid,CHECKIN_FILE):

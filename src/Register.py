@@ -138,7 +138,7 @@ def main():
             new_value = st.text_input(f"{selected_key} (現在の値: {rguser[selected_key]})", value=str(rguser[selected_key]))
 
         if st.button("更新"):
-            df.loc[st.session_state.user_index] = new_value
+            df.loc[st.session_state.user_index, selected_key] = new_value
             now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Time'] = now_str
             df.to_csv(REGISTERED_FILE, index=False)
