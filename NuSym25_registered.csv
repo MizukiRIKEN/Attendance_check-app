@@ -1,54 +1,54 @@
-﻿ID,Name
-1,Lie-Wen Chen
-2,Abdelouahad Chbihi
-3,Bao-An Li
-4,Shinsuke Ota
-5,Sylvie Hudan
-6,Yifei Niu
-7,Maria Colonna
-8,Jorge Piekarewicz
-9,Marc Salinas
-10,Zhen Zhang
-11,Alan McIntosh
-12,Paolo Russotto
-13,Arnaud Le Fèvre
-14,William G. Lynch
-15,M. Betty Tsang
-16,Giuseppe Verde
-17,Zhi-Gang Xiao
-18,Caterina Ciampi
-19,Dan Cozma
-20,Pawel Danielewicz
-21,Agnieszka Sorensen
-22,Jan Steinheimer
-23,Yingxun Zhang
-24,Stefan Typel
-25,Jerome Margueron
-26,Jeremy W. Holt
-27,Arnau Rios
-28,Ingo Tews
-29,Stefano Burrello
-30,Nicolas Chamel
-31,Carlo Baribieri
-32,Satoshi N. Nakamura
-33,Asanosuke Jinno
-34,Isaac Vidaña
-35,Che-Ming Ko
-36,Koji Miwa
-37,Maria Stefaniak
-38,Hui Tong
-39,Anna Watts
-40,Sebastien Guillot
-41,Devarshi Choudhury
-42,Ang Li
-43,Francesca Gulminelli
-44,Hauke Koehn
-45,Luca Baiotti
-46,Anthea Fantina
-47,Kohsuke Sumiyoshi
-48,James M. Lattimer
-49,Tobias Fischer
-50,Nu Xu
-51,Yapeng Zhang
-52,Zbigniew Chajecki
-55,Seung-Woo Hong
+ID,Name,Session,Banquet,Excursion,Ropeway,Special food,Time,Comment
+1,Lie-Wen Chen,TRUE,TRUE,TRUE,TRUE,TRUE,,
+2,Abdelouahad Chbihi,TRUE,TRUE,TRUE,TRUE,FALSE,,
+3,Bao-An Li,TRUE,TRUE,TRUE,TRUE,FALSE,,
+4,Shinsuke Ota,TRUE,TRUE,TRUE,TRUE,TRUE,,
+5,Sylvie Hudan,TRUE,TRUE,TRUE,TRUE,TRUE,,
+6,Yifei Niu,TRUE,TRUE,TRUE,TRUE,TRUE,,
+7,Maria Colonna,TRUE,TRUE,TRUE,TRUE,TRUE,,
+8,Jorge Piekarewicz,TRUE,TRUE,TRUE,TRUE,FALSE,,
+9,Marc Salinas,TRUE,FALSE,TRUE,TRUE,TRUE,,
+10,Zhen Zhang,TRUE,TRUE,FALSE,TRUE,FALSE,,
+11,Alan McIntosh,TRUE,FALSE,FALSE,TRUE,TRUE,,
+12,Paolo Russotto,TRUE,TRUE,TRUE,TRUE,TRUE,,
+13,Arnaud Le Fèvre,TRUE,TRUE,TRUE,TRUE,TRUE,,
+14,William G. Lynch,TRUE,TRUE,TRUE,TRUE,TRUE,,
+15,M. Betty Tsang,TRUE,TRUE,FALSE,TRUE,TRUE,,
+16,Giuseppe Verde,TRUE,TRUE,TRUE,TRUE,TRUE,,
+17,Zhi-Gang Xiao,TRUE,TRUE,TRUE,TRUE,TRUE,,
+18,Caterina Ciampi,TRUE,TRUE,FALSE,TRUE,TRUE,,
+19,Dan Cozma,TRUE,TRUE,TRUE,TRUE,TRUE,,
+20,Pawel Danielewicz,TRUE,TRUE,TRUE,TRUE,TRUE,,
+21,Agnieszka Sorensen,TRUE,TRUE,TRUE,TRUE,TRUE,,
+22,Jan Steinheimer,TRUE,TRUE,TRUE,TRUE,FALSE,,
+23,Yingxun Zhang,TRUE,TRUE,FALSE,TRUE,TRUE,,
+24,Stefan Typel,TRUE,TRUE,TRUE,TRUE,TRUE,,
+25,Jerome Margueron,TRUE,TRUE,TRUE,TRUE,TRUE,,
+26,Jeremy W. Holt,TRUE,TRUE,FALSE,TRUE,TRUE,,
+27,Arnau Rios,TRUE,TRUE,TRUE,TRUE,TRUE,,
+28,Ingo Tews,TRUE,TRUE,TRUE,TRUE,TRUE,,
+29,Stefano Burrello,TRUE,FALSE,FALSE,TRUE,TRUE,,
+30,Nicolas Chamel,TRUE,TRUE,TRUE,TRUE,TRUE,,
+31,Carlo Baribieri,TRUE,TRUE,TRUE,TRUE,TRUE,,
+32,Satoshi N. Nakamura,TRUE,FALSE,FALSE,TRUE,TRUE,,
+33,Asanosuke Jinno,TRUE,TRUE,TRUE,TRUE,TRUE,,
+34,Isaac Vidaña,TRUE,TRUE,TRUE,TRUE,TRUE,,
+35,Che-Ming Ko,TRUE,TRUE,TRUE,TRUE,TRUE,,
+36,Koji Miwa,TRUE,TRUE,TRUE,TRUE,TRUE,,
+37,Maria Stefaniak,TRUE,TRUE,TRUE,TRUE,TRUE,,
+38,Hui Tong,TRUE,TRUE,TRUE,TRUE,TRUE,,
+39,Anna Watts,TRUE,TRUE,TRUE,TRUE,TRUE,,
+40,Sebastien Guillot,TRUE,TRUE,TRUE,TRUE,TRUE,,
+41,Devarshi Choudhury,TRUE,TRUE,TRUE,TRUE,TRUE,,
+42,Ang Li,TRUE,TRUE,TRUE,TRUE,TRUE,,
+43,Francesca Gulminelli,TRUE,TRUE,TRUE,TRUE,TRUE,,
+44,Hauke Koehn,TRUE,TRUE,TRUE,TRUE,TRUE,,
+45,Luca Baiotti,TRUE,TRUE,TRUE,TRUE,TRUE,,
+46,Anthea Fantina,TRUE,TRUE,TRUE,TRUE,TRUE,,
+47,Kohsuke Sumiyoshi,TRUE,TRUE,TRUE,TRUE,TRUE,,
+48,James M. Lattimer,TRUE,TRUE,TRUE,TRUE,TRUE,,
+49,Tobias Fischer,TRUE,TRUE,TRUE,TRUE,TRUE,,
+50,Nu Xu,TRUE,TRUE,TRUE,TRUE,TRUE,,
+51,Yapeng Zhang,TRUE,TRUE,TRUE,TRUE,TRUE,,
+52,Zbigniew Chajecki,TRUE,TRUE,TRUE,TRUE,TRUE,,
+55,Seung-Woo Hong,TRUE,TRUE,TRUE,TRUE,TRUE,,

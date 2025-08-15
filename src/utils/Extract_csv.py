@@ -8,7 +8,7 @@ REGISTERED_FILE = "NuSym25_registered.csv"  # 適宜ファイル名を変更
 # CSVを読み込む
 df = pd.read_csv(REGISTERED_FILE)
 
-filtered_df = df[df['ID'].notnull() & df['Name'].notnull()]
+filtered_df = df[df['Excursion'].notnull() & df['Name'].notnull()]
 
 # IDと名前だけ抽出
 id_name_df = df[['ID', 'Name']]
