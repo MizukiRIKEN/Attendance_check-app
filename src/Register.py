@@ -66,20 +66,16 @@ def main():
 
     st.markdown("### IDを検索するため名前の一部を入力してください")
     input_name = st.text_input("Name")
+    if input_name: 
+        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+        if not user.empty:
+            st.write(user)
+        else:
+            st.warning("未登録の名前です。")
 
     # --- セッションでIDを保持 ---
     if "user_index" not in st.session_state:
         st.session_state.user_index = None
-
-    if st.button("検索"):
-        if input_name:
-            user = df[df['Name'].str.contains(input_name, case=False, na=False)]
-            if not user.empty:
-                st.write(user)
-            else:
-                st.warning("未登録の名前です。")
-        else:
-            st.warning("名前を入力してください。")
 
     st.markdown("---")
 
