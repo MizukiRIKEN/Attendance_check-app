@@ -95,13 +95,25 @@ def main():
     st.write(f"参加者リストファイル: [{REGISTERED_FILE}]")
 
     # 入力フォームi
-    st.markdown("#### 出席登録する参加者のIDを入力してください")
-    input_id = st.text_input("参加者IDを入力してください", placeholder="例: 12")
+    st.markdown("### ️🟢 登録する氏名の一部を入力してください")
+    input_name = st.text_input("Name")
+    selected_id = None  # 追加
+
+    if input_name: 
+        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+        if not user.empty:
+            st.write(user)
+            # ユーザー選択用のセレクトボックスを追加
+            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
+            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
+            if selected_user:
+                selected_id = selected_user.split(" : ")[0]  # IDのみ抽出
+        else:
+            st.warning("未登録の名前です。")
+
+    st.markdown("### 🟢 出席登録する参加者のIDを入力してください")
+    input_id = st.text_input("参加者IDを入力してください", value=selected_id, placeholder="例: 12345")
     comment = st.text_input("コメント（任意）", placeholder="例: 領収書 など")  # ← コメント欄を追加
-
-  
-
-    input_id = input_id.strip()  # 前後の空白を削除
 
     if st.button("出席確認"):
         if input_id:
@@ -201,15 +213,7 @@ def main():
         )
     
     st.markdown("---")
-    
-    st.markdown("##### 登録者のIDを検索")
-    input_name = st.text_input("Name")
-    if input_name:
-        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
-        if not user.empty:
-            st.write(user)
-        else:
-            st.warning("未登録の名前です。")
+   
 
 #%%----
 if __name__ == "__main__":

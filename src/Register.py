@@ -54,7 +54,7 @@ def modify_register(df, user_idx):
     
 #%%
 def main():
-    st.markdown("# NuSym25 Register application")
+    st.markdown("# NuSym25 Registration")
 
     REGISTERED_FILE = "NuSym25_registered.csv"
 
@@ -64,12 +64,19 @@ def main():
 
     df = pd.read_csv(REGISTERED_FILE, dtype=dtype_dict)
 
-    st.markdown("### IDを検索するため名前の一部を入力してください")
+    st.markdown("### ️🟢 登録する氏名の一部を入力してください")
     input_name = st.text_input("Name")
+    selected_id = None  # 追加
+
     if input_name: 
         user = df[df['Name'].str.contains(input_name, case=False, na=False)]
         if not user.empty:
             st.write(user)
+            # ユーザー選択用のセレクトボックスを追加
+            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
+            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
+            if selected_user:
+                selected_id = selected_user.split(" : ")[0]  # IDのみ抽出
         else:
             st.warning("未登録の名前です。")
 
@@ -78,9 +85,9 @@ def main():
         st.session_state.user_index = None
 
     st.markdown("---")
-
-    st.markdown("### 登録者のIDを入力して登録してください")
-    input_id = st.text_input("登録するID")
+    st.markdown("### 🟢 登録者のIDを入力して登録してください")
+    # 選択されたIDがあれば自動入力
+    input_id = st.text_input("登録するID", value=selected_id if selected_id else "")
 
     st.markdown(f"--- 現在の時刻: {datetime.now().strftime('%Y%m%d-%H%M%S')} ---")
 
