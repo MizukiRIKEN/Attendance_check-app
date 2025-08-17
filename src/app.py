@@ -57,7 +57,7 @@ def show_checkin_log(CHECKIN_FILE):
 #%%----
 def main():
     st.title("NuSym25")
-    st.write("NuSym25参加者を確認するアプリです。")
+    st.title("✅ 出席確認アプリ")
 
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
@@ -91,7 +91,6 @@ def main():
     st.markdown("---")
 
 
-    st.title("✅ 出席確認アプリ")
     st.write(f"参加者リストファイル: [{REGISTERED_FILE}]")
 
     # 入力フォームi
