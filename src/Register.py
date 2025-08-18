@@ -134,24 +134,47 @@ def main():
         st.markdown(f"### {name} さんの登録内容を変更")
         selected_key = st.selectbox("変更したい項目を選択してください", [k for k in Personal_info.keys() if k != 'ID'])
 
+        try:
         # 項目ごとに入力欄を表示
-        if selected_key in ['session','Banquet', 'Excursion', 'Ropeway', 'Special food']:
-            new_value = st.selectbox(f"{selected_key} (現在の値: {rguser[selected_key]})", ['Yes', 'No'], index=0 if rguser[selected_key] == 'Yes' else 1)
-        else:
-            new_value = st.text_input(f"{selected_key} (現在の値: {rguser[selected_key]})", value=str(rguser[selected_key]))
+            if selected_key in ['Session','Banquet', 'Excursion', 'Ropeway', 'Special food']:
+                options = ['Yes', 'No']
+                current_value = str(rguser[selected_key])
+                if current_value in options:
+                    default_index = options.index(current_value)
+                else:
+                    default_index = 0  # デフォルトは 'Yes'
 
-        if st.button("更新"):
-            df.loc[st.session_state.user_index, selected_key] = new_value
+                new_value = st.selectbox(
+                    f"{selected_key} (現在の値: {current_value})",
+                    options,
+                    index=default_index
+                )
+            else:
+                new_value = st.text_input(f"{selected_key} (現在の値: {rguser[selected_key]})", value=str(rguser[selected_key]))
+            update = st.button("更新", key="update_button")
+            if update and new_value:
+                df.loc[st.session_state.user_index, selected_key] = new_value
+                df.to_csv(REGISTERED_FILE, index=False)
+                st.success(f"{name} さんの登録内容を更新しました。 ✅")
+                st.write("変更後の情報:")
+                st.write(df.loc[st.session_state.user_index])
+        except KeyError:
+            st.error("無効なキーです。")
+
+        if st.button("保存して終了"):
             now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Time'] = now_str
             df.to_csv(REGISTERED_FILE, index=False)
-            st.success(f"{name} さんの登録内容を更新しました。 ✅")
-            st.write("変更後の情報:")
-            st.write(df.loc[st.session_state.user_index])
             st.session_state.modify_mode = False
             st.session_state.user_index = None
             st.rerun()
 
+    st.markdown("---")
+    
+    if st.button("画面の更新"):
+        st.rerun()  # 画面をリロードするボタン
+        
+    st.markdown("#### Status ")
     st.write(df)
 
 if __name__ == "__main__":

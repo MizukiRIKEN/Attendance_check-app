@@ -167,9 +167,9 @@ def main():
                     st.warning("正しいIDを入力してください。")
                     
     st.markdown("---")
-    
-    st.markdown("##### 画面のリロード")
-    if st.button("画面をリロード"):
+
+    st.markdown("##### 画面の更新")
+    if st.button("画面の更新"):
         st.rerun()  # 画面をリロードするボタン
     
     st.markdown("---")
