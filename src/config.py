@@ -4,7 +4,7 @@ MEETING_TYPES = [
     "Banquet",
     "Excursion",
     "Ropeway",
-    "Goto",
+    "Going",
     "Return"
 ]
 
@@ -24,7 +24,8 @@ Personal_info = {
     'Ropeway': '',
     'Special food': '',
     'Time': '',
-    'Comment': ''
+    'Comment': '',
+    'Registerer': ''
 }
 
 dtype_dict = {
@@ -36,5 +37,6 @@ dtype_dict = {
     'Ropeway': str,
     'Special food': str,
     'Time': str,
-    'Comment': str
+    'Comment': str,
+    'Registerer': str  
 }

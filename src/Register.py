@@ -56,8 +56,18 @@ def modify_register(df, user_idx):
 def main():
     st.markdown("# NuSym25 Registration")
 
-    REGISTERED_FILE = "NuSym25_registered.csv"
+    REGISTERERER = None
+    input_registerer = st.text_input("登録者名")
+    if input_registerer:
+        REGISTERERER = input_registerer
 
+    if not REGISTERERER:
+        st.warning("登録者名を入力してください。")
+        return
+    
+
+    REGISTERED_FILE = "NuSym25_registered.csv"
+    
     if not os.path.exists(REGISTERED_FILE):
         st.error(f"登録者リストファイルが見つかりません: {REGISTERED_FILE}")
         return  
@@ -108,6 +118,7 @@ def main():
                 now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
                 st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
                 df.loc[st.session_state.user_index, 'Time'] = now_str
+                df.loc[st.session_state.user_index, 'Registerer'] = REGISTERERER
                 df.to_csv(REGISTERED_FILE, index=False)
                 st.success(f"{input_id} を登録しました。 ✅")
                 st.write("登録後の情報:")
@@ -123,6 +134,7 @@ def main():
     elif st.session_state.user_index is not None:
         if st.button("登録を修正"):
             df.loc[st.session_state.user_index, 'Time'] = None
+            df.loc[st.session_state.user_index, 'Registerer'] = REGISTERERER
             df.to_csv(REGISTERED_FILE, index=False)
             st.rerun()
 
@@ -149,11 +161,12 @@ def main():
                     options,
                     index=default_index
                 )
-            else:
+            elif selected_key != 'Registerer':
                 new_value = st.text_input(f"{selected_key} (現在の値: {rguser[selected_key]})", value=str(rguser[selected_key]))
             update = st.button("更新", key="update_button")
             if update and new_value:
                 df.loc[st.session_state.user_index, selected_key] = new_value
+                df.loc[st.session_state.user_index, 'Registerer'] = REGISTERERER
                 df.to_csv(REGISTERED_FILE, index=False)
                 st.success(f"{name} さんの登録内容を更新しました。 ✅")
                 st.write("変更後の情報:")
@@ -164,6 +177,7 @@ def main():
         if st.button("保存して終了"):
             now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Time'] = now_str
+            df.loc[st.session_state.user_index, 'Registerer'] = REGISTERERER
             df.to_csv(REGISTERED_FILE, index=False)
             st.session_state.modify_mode = False
             st.session_state.user_index = None
@@ -175,7 +189,13 @@ def main():
         st.rerun()  # 画面をリロードするボタン
         
     st.markdown("#### Status ")
-    st.write(df)
+    st.dataframe(
+        df,
+        hide_index=True,
+        column_config={
+            "ID": st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True)
+        }
+    )
 
 if __name__ == "__main__":
     main()

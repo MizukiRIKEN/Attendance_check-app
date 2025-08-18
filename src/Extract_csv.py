@@ -25,11 +25,11 @@ for key in MEETING_TYPES:
 
     
     # ExcursionとNameの列がnullでない行を抽出
-    if key == "Goto" or key == "Return":
+    if key == "Going" or key == "Return":
         skey = "Excursion"
     else:
         skey = key
-    filtered_df = df[df[skey]==True & df['Name'].notnull()]
+    filtered_df = df[(df[skey]=='Yes') & (df['Name'].notnull())]
     id_name_df = filtered_df[['ID', 'Name']]
     id_name_df.to_csv(REGISTERED_FILE, index=False)
     print(f"{REGISTERED_FILE} に {len(id_name_df)} 人の登録者がいます。")
