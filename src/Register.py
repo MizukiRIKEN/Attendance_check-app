@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 from config import Personal_info
 from config import dtype_dict
-
+from config import MEETING_NAME, REGISTERED_FILE
 
 #%%
 def check_register(df, user_idx):
@@ -51,10 +51,16 @@ def modify_register(df, user_idx):
         st.success(f"{name} さんの出席を更新して登録しました。 ✅")
         st.write("変更後の情報:")
         st.write(df.loc[user_idx])
+
+#%%
+def get_Last_Registered_User(df):
+    if df.empty:
+        return None
+    return int(df.loc[df.index[-1], 'ID'])
     
 #%%
 def main():
-    st.markdown("# NuSym25 Registration")
+    st.markdown(f"# {MEETING_NAME} Registration")
 
     REGISTERERER = None
     input_registerer = st.text_input("登録者名")
@@ -64,9 +70,6 @@ def main():
     if not REGISTERERER:
         st.warning("登録者名を入力してください。")
         return
-    
-
-    REGISTERED_FILE = "NuSym25_registered.csv"
     
     if not os.path.exists(REGISTERED_FILE):
         st.error(f"登録者リストファイルが見つかりません: {REGISTERED_FILE}")
@@ -89,6 +92,30 @@ def main():
                 selected_id = selected_user.split(" : ")[0]  # IDのみ抽出
         else:
             st.warning("未登録の名前です。")
+            st.markdown("##### 新規登録しますか？")
+            input_new_name = st.text_input("新規登録する氏名を入力してください", value=input_name)
+            if st.button("新規登録"):
+                new_id = get_Last_Registered_User(df) + 1 if get_Last_Registered_User(df) is not None else 1
+                new_user = {
+                    'ID': int(new_id),
+                    'Name': input_new_name,
+                    'Session': 'Yes',
+                    'Banquet': 'Yes',
+                    'Excursion': 'Yes',
+                    'Ropeway': 'Yes',
+                    'Special food': 'No',
+                    'Time': datetime.now().strftime("%Y%m%d-%H%M%S"),
+                    'Comment': '',
+                    'Registerer': REGISTERERER
+                }
+                df = pd.concat([df, pd.DataFrame([new_user])], ignore_index=True)
+                df.to_csv(REGISTERED_FILE, index=False)
+                st.success(f"{input_new_name} さんを新規登録しました。 ✅")
+                st.write("登録後の情報:")
+                st.write(df.loc[df['Name'] == input_new_name])
+                st.session_state.user_index = None
+                st.session_state.modify_mode = False
+                st.rerun()
 
     # --- セッションでIDを保持 ---
     if "user_index" not in st.session_state:

@@ -1,3 +1,7 @@
+# 会議名
+MEETING_NAME = "NuSym25"
+REGISTERED_FILE = f"{MEETING_NAME}_registered.csv"
+
 #リストを選択する
 MEETING_TYPES = [
     "Session",
