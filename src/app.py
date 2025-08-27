@@ -4,7 +4,7 @@ from types import *  # 型定義をインポート
 import pandas as pd
 from datetime import datetime
 import os
-from config import MEETING_TYPES, REGISTERED_HEAD, CHECKIN_HEAD, Personal_info, dtype_dict
+from config import * 
 
 #%%----  
 def diffrentiate_checkin(cid,CHECKIN_FILE):
@@ -56,8 +56,17 @@ def show_checkin_log(CHECKIN_FILE):
     
 #%%----
 def main():
-    st.title("NuSym25")
+    st.title(f"{MEETING_NAME}")
     st.title("✅ 出席確認アプリ")
+
+    REGISTERER = None
+    input_registerer = st.text_input("受付者の名前を入力してください。")
+    if input_registerer:
+        REGISTERER = input_registerer
+
+    if not REGISTERER:
+        st.warning("受付者の名前を入力してください。")
+        return
 
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
@@ -83,9 +92,9 @@ def main():
         st.write(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
         st.write("新しいチェックインを開始します。")
         with open(CHECKIN_FILE, "w") as f:
-            f.write("ID,Name,Comment,Time\n")
-    
-   
+            f.write("ID,Name,Comment,Time,Registerer\n")
+
+
     st.markdown(f'<span style="color:blue"> 登録者リストファイル: [{REGISTERED_FILE}]</span>', unsafe_allow_html=True)
     st.markdown(f'<span style="color:blue"> チェックイン記録ファイル: [{CHECKIN_FILE}]</span>', unsafe_allow_html=True)
     st.markdown("---")
@@ -130,7 +139,7 @@ def main():
                     # チェックイン記録を保存
                     with open(CHECKIN_FILE, "a") as f:
                         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
-                        f.write(f"{input_id},{name},{comment},{now_str}\n")
+                        f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
                 else:
                     st.warning(f"{name} さんはすでにチェックイン済みです。")
             else:

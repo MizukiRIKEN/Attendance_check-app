@@ -63,12 +63,12 @@ def main():
     st.markdown(f"# {MEETING_NAME} Registration")
 
     REGISTERERER = None
-    input_registerer = st.text_input("登録者名")
+    input_registerer = st.text_input("受付者の名前を入力してください。")
     if input_registerer:
         REGISTERERER = input_registerer
 
     if not REGISTERERER:
-        st.warning("登録者名を入力してください。")
+        st.warning("受付者の名前を入力してください。")
         return
     
     if not os.path.exists(REGISTERED_FILE):
