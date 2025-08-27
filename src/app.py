@@ -89,8 +89,8 @@ def main():
         return
     
     if not os.path.exists(CHECKIN_FILE):
-        st.write(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
-        st.write("新しいチェックインを開始します。")
+        st.warning(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
+        st.markdown("#### 新しいチェックインを開始します。-->> ")
         with open(CHECKIN_FILE, "w") as f:
             f.write("ID,Name,Comment,Time,Registerer\n")
 
@@ -99,8 +99,6 @@ def main():
     st.markdown(f'<span style="color:blue"> チェックイン記録ファイル: [{CHECKIN_FILE}]</span>', unsafe_allow_html=True)
     st.markdown("---")
 
-
-    st.write(f"参加者リストファイル: [{REGISTERED_FILE}]")
 
     # 入力フォームi
     st.markdown("### ️🟢 登録する氏名の一部を入力してください")
