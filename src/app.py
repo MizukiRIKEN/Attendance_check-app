@@ -71,7 +71,7 @@ def main():
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
         options=MEETING_TYPES,
-        index=1  # デフォルトで最初のオプションを選択
+        index=0  # デフォルトで最初のオプションを選択
     )
 
     REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}{meeting_type}.csv"
@@ -91,7 +91,7 @@ def main():
         return
     
     if not os.path.exists(CHECKIN_FILE):
-        st.warning(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
+        #st.warning(f"チェックイン記録ファイルが見つかりません: {CHECKIN_FILE}")
         st.markdown("#### 新しいチェックインを開始します。-->> ")
         with open(CHECKIN_FILE, "w") as f:
             f.write("ID,Name,Comment,Time,Registerer\n")
@@ -110,7 +110,14 @@ def main():
     if input_name: 
         user = df[df['Name'].str.contains(input_name, case=False, na=False)]
         if not user.empty:
-            st.write(user)
+            st.dataframe(
+                user,
+                use_container_width=True,
+                hide_index=True,
+                column_config={"ID":st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True),
+                               "Name": "氏名"}
+            )
+            #st.write(user)
             # ユーザー選択用のセレクトボックスを追加
             user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
             selected_user = st.selectbox("リストから参加者を選択してください", user_options)
@@ -119,10 +126,23 @@ def main():
         else:
             st.warning("未登録の名前です。")
 
-    st.markdown("### 🟢 出席登録する参加者のIDを入力してください")
-    input_id = st.text_input("参加者IDを入力してください", value=selected_id, placeholder="例: 12345")
-    comment = st.text_input("コメント（任意）", placeholder="例: 領収書 など")  # ← コメント欄を追加
-
+    if meeting_type != "Entrance":
+        st.markdown("### 🟢 出席登録する参加者のIDを入力してください")
+        input_id = st.text_input("参加者IDを入力してください", value=selected_id)
+        
+        if input_id:
+            user = df[df['ID'] == int(input_id)]
+            if not user.empty:
+                name = user.iloc[0]['Name']
+                st.write(f" 参加者: [{input_id}]　{name} さん")
+                comment = st.text_input("コメント（任意）")  # ← コメント欄を追加
+            else:
+                st.error("未登録のIDです。")
+                
+    else:
+        input_id = selected_id
+        comment = ""
+        
     if st.button("出席確認"):
         if input_id:
             # IDが登録者リストに存在するか確認
