@@ -1,46 +1,45 @@
 # 会議名
 MEETING_NAME = "NuSym25"
-REGISTERED_FILE = f"{MEETING_NAME}_registered.csv"
-
+REGISTERED_FILE = f"{MEETING_NAME}_participant_list.csv"
+REGISTERED_HEAD = MEETING_NAME+"_Regs_"
+CHECKIN_HEAD = MEETING_NAME+"_Chkin_"
+ 
 #リストを選択する
 MEETING_TYPES = [
+    "Entrance",
     "Session",
-    "Banquet",
     "Excursion",
     "Ropeway",
     "Going",
-    "Return"
+    "Return",
+    "Banquet"
 ]
 
- 
-REGISTERED_HEAD = "Registered_"
-CHECKIN_HEAD = "Checkin_"
-   
-
-
-
 Personal_info = {
-    'ID': '',
-    'Name': '',
-    'Session': '',
-    'Banquet': '',
-    'Excursion': '',
-    'Ropeway': '',
-    'Special food': '',
-    'Time': '',
-    'Comment': '',
-    'Registerer': ''
+    'ID': ' ',
+    'Name': ' ',
+    'Entrance': ' ',
+    'Session': ' ',
+    'Excursion': ' ',
+    'Dietary Request': ' ',
+    'Detail of Dietary Request': ' ',
+    'Ropeway': ' ',
+    'Banquet': ' ',
+    'Time': ' ',
+    'Comment': ' ',
+    'Receptionist': ' '
 }
 
 dtype_dict = {
     'ID': str,
     'Name': str,
+    'Entrance': str,
     'Session': str,
-    'Banquet': str,
     'Excursion': str,
     'Ropeway': str,
+    'Banquet': str,
     'Special food': str,
     'Time': str,
     'Comment': str,
-    'Registerer': str  
+    'Receptionist': str
 }
