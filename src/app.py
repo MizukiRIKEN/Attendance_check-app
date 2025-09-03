@@ -102,8 +102,8 @@ def main():
     st.markdown("---")
 
 
-    # 入力フォームi
-    st.markdown("### ️🟢 登録する氏名の一部を入力してください")
+    # 入力フォーム
+    st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
     input_name = st.text_input("Name")
     selected_id = None  # 追加
 
@@ -127,7 +127,7 @@ def main():
             st.warning("未登録の名前です。")
 
     if meeting_type != "Entrance":
-        st.markdown("### 🟢 出席登録する参加者のIDを入力してください")
+        st.markdown("### 🟢 登録する参加者のIDを入力してください")
         input_id = st.text_input("参加者IDを入力してください", value=selected_id)
         
         if input_id:
