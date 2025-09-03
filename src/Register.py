@@ -99,6 +99,15 @@ def main():
     st.markdown("### 🟢 登録者のIDを入力して登録してください")
     # 選択されたIDがあれば自動入力
     input_id = st.text_input("登録するID", value=selected_id if selected_id else "")
+    
+    if input_id:
+        user = df[df['ID'] == input_id]
+        if not user.empty:
+            name = user.iloc[0]['Name']
+            st.write(f" 参加者: [{input_id}]　{name} さん")
+
+        else:
+            st.error("未登録のIDです。")
 
     st.markdown(f"--- 現在の時刻: {datetime.now().strftime('%Y%m%d-%H%M%S')} ---")
 
