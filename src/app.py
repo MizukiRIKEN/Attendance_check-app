@@ -73,8 +73,10 @@ def main():
         options=MEETING_TYPES,
         index=1  # デフォルトで最初のオプションを選択
     )
-    REGISTERED_FILE = REGISTERED_HEAD + meeting_type + ".csv"
-    CHECKIN_FILE = CHECKIN_HEAD + meeting_type + ".csv"
+
+    REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}{meeting_type}.csv"
+    CHECKIN_FILE = f"{DIR_OUTPUT}/{CHECKIN_HEAD}{meeting_type}.csv"
+
     st.write(f" {meeting_type} を選択中")
    
     # CSVファイルから登録者リストを読み込

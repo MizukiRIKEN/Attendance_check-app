@@ -4,9 +4,9 @@ from types import *
 import pandas as pd
 from datetime import datetime
 import os
-from config import Personal_info
-from config import dtype_dict
-from config import MEETING_NAME, REGISTERED_FILE
+from config import *
+
+REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}Session.csv"
 
 #%%
 def check_register(df, user_idx):
@@ -28,29 +28,6 @@ def check_register(df, user_idx):
             return False
     return False
 
-
-#%%
-def modify_register(df, user_idx):
-    rguser = df.loc[user_idx]
-    name = rguser['Name']
-    
-    if st.selectbox("変更したい項目を選択してください", list(Personal_info.keys())) == 'ID':
-        st.warning("IDは変更できません。")
-    else:
-        for key in Personal_info.keys():
-            if key == 'Banquet':
-                new_value = st.selectbox(f"{key} (現在の値: {rguser[key]})", value=['Yes', 'No'], index=0 if rguser[key] == 'Yes' else 1)
-                df.loc[user_idx, key] = new_value
-            elif key == 'Excursion':
-                new_value = st.selectbox(f"{key} (現在の値: {rguser[key]})", value=['Yes', 'No'], index=0 if rguser[key] == 'Yes' else 1)
-                df.loc[user_idx, key] = new_value
-                df.loc[user_idx, 'Ropeway'] = new_value
-
-        df.to_csv(REGISTERED_FILE, index=False)
-        st.write(df.loc[user_idx])
-        st.success(f"{name} さんの出席を更新して登録しました。 ✅")
-        st.write("変更後の情報:")
-        st.write(df.loc[user_idx])
 
 #%%
 def get_Last_Registered_User(df):
@@ -162,17 +139,16 @@ def main():
             df.to_csv(REGISTERED_FILE, index=False)
             st.rerun()
 
-    # 変更モードの場合のみ modify_register のフォームを表示
     if st.session_state.get("modify_mode", False) and st.session_state.user_index is not None:
         rguser = df.loc[st.session_state.user_index]
         name = rguser['Name']
 
         st.markdown(f"### {name} さんの登録内容を変更")
-        selected_key = st.selectbox("変更したい項目を選択してください", [k for k in Personal_info.keys() if k != 'ID'])
+        selected_key = st.selectbox("変更したい項目を選択してください", [k for k in ['Name','Excursion','Banquet','Dietary Request','Comment']])
 
         try:
         # 項目ごとに入力欄を表示
-            if selected_key in ['Session', 'Entrance', 'Excursion', 'Ropeway', 'Banquet', 'Special food']:
+            if selected_key in ['Excursion','Banquet', 'Dietary Request']:
                 options = ['Yes', 'No']
                 current_value = str(rguser[selected_key])
                 if current_value in options:
@@ -191,6 +167,7 @@ def main():
             if update and new_value:
                 df.loc[st.session_state.user_index, selected_key] = new_value
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
+                df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
                 df.to_csv(REGISTERED_FILE, index=False)
                 st.success(f"{name} さんの登録内容を更新しました。 ✅")
                 st.write("変更後の情報:")
@@ -199,8 +176,7 @@ def main():
             st.error("無効なキーです。")
 
         if st.button("保存して終了"):
-            now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
-            df.loc[st.session_state.user_index, 'Time'] = now_str
+            df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
             df.to_csv(REGISTERED_FILE, index=False)
             st.session_state.modify_mode = False
