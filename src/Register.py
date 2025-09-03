@@ -124,7 +124,7 @@ def main():
         st.markdown("#### 登録を選択してください")
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("変更せず登録する"):
+            if st.button("登録"):
                 now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
                 st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
                 df.loc[st.session_state.user_index, 'Time'] = now_str
@@ -137,7 +137,7 @@ def main():
                 st.session_state.modify_mode = False
                 st.rerun()
         with col2:
-            if st.button("変更して登録する"):
+            if st.button("変更して登録"):
                 st.session_state.modify_mode = True  # ← 変更モードに切り替え
                 st.rerun()
 
