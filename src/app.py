@@ -7,17 +7,17 @@ import os
 from config import * 
 
 #%%----  
-def diffrentiate_checkin(cid,CHECKIN_FILE):
+def diffrentiate_checkin(cid, CHECKIN_FILE):
     """
     チェックインの差分を表示する関数
     """
     log_df = pd.read_csv(CHECKIN_FILE)
     fuser = log_df[log_df['ID'] == int(cid)]
     if fuser.empty:
-        #st.write(f"ID {cid} 新チェックイン")
         return True
     else:
-        st.error(f"ID {cid} : {fuser} チェックイン済み")
+        #name = fuser.iloc[0]['Name'] if 'Name' in fuser.columns and not fuser.empty else ""
+        #st.error(f"ID {cid}（{name}）はすでにチェックイン済みです。")
         return False
 #%%----
 # チェクインしていない参加者のリストを表示
@@ -126,46 +126,53 @@ def main():
         else:
             st.warning("未登録の名前です。")
 
-    if meeting_type != "Entrance":
-        st.markdown("### 🟢 登録する参加者のIDを入力してください")
-        input_id = st.text_input("参加者IDを入力してください", value=selected_id, key="ID")
-        
-        if input_id:
-            user = df[df['ID'] == int(input_id)]
-            if not user.empty:
-                name = user.iloc[0]['Name']
-                st.write(f" 参加者: [{input_id}]　{name} さん")
-                comment = st.text_input("コメント（任意）", key="Comment")  # ← コメント欄を追加
-            else:
-                st.error("未登録のIDです。")
-                
-    else:
-        input_id = selected_id
-        comment = ""
-        
-    if st.button("出席確認"):
-        if input_id:
-            # IDが登録者リストに存在するか確認
-            user = df[df['ID'] == int(input_id)]
-            #st.write(user)
-        
-            if not user.empty:
-                name = user.iloc[0]['Name']
-                st.write(f" 参加者: [{input_id}]　{name} さん")
+        if meeting_type != "Entrance":
+            st.markdown("### 🟢 登録する参加者のIDを入力してください")
+            input_id = st.text_input("参加者IDを入力してください", value=selected_id, key="ID")
             
-                if diffrentiate_checkin(input_id,CHECKIN_FILE):
-                
-                    st.success(f"{name} さんの出席を確認しました ✅")
-                    # チェックイン記録を保存
-                    with open(CHECKIN_FILE, "a") as f:
-                        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
-                        f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
+            if input_id:
+                user = df[df['ID'] == int(input_id)]
+                if not user.empty:
+                    name = user.iloc[0]['Name']
+                    st.write(f" 参加者: [{input_id}]　{name} さん")
+                    comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
+                    st.session_state['regist']= True
                 else:
-                    st.warning(f"{name} さんはすでにチェックイン済みです。")
-            else:
-                st.error("未登録のIDです。")
+                    st.error("未登録のIDです。")
+                    
         else:
-            st.warning("IDを入力してください。")
+            input_id = selected_id
+            comment = ""
+            
+    if st.session_state.get('regist') is True:        
+        if st.button("出席確認"):
+            if input_id:
+                # IDが登録者リストに存在するか確認
+                user = df[df['ID'] == int(input_id)]
+                #st.write(user)
+            
+                if not user.empty:
+                    name = user.iloc[0]['Name']
+                    st.write(f" 参加者: [{input_id}]　{name} さん")
+                
+                    if diffrentiate_checkin(input_id,CHECKIN_FILE):
+                        st.success(f"{name} さんの出席を確認しました ✅")
+                        # チェックイン記録を保存
+                        with open(CHECKIN_FILE, "a") as f:
+                            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
+                            f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
+                        st.session_state['regist'] = False
+                        #st.rerun()  # 画面リロードで入力欄をクリア
+                    else:
+                        st.warning(f"{name} さんはすでにチェックイン済みです。")
+                        st.session_state['regist'] = False
+                else:
+                    st.error("未登録のIDです。")
+                    st.session_state['regist'] = False
+            else:
+                st.warning("IDを入力してください。")
+                st.session_state['regist'] = False
+
 
     st.markdown("---")
     
