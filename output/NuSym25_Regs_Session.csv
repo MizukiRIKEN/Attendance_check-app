@@ -1,12 +1,12 @@
 ID,Name,Excursion,Banquet,Dietary Request,Time,Comment,Receptionist
-2,Tomoya Naito,Yes,Yes,No,,,
-3,Chang Ho Hyun,Yes,Yes,No,,,
+2,Tomoya Naito,Yes,Yes,No,20250904-133314,,mizuki
+3,Chang Ho Hyun,Yes,Yes,No,20250904-133345,,mizuki
 4,Nikolai Shchechilin,Yes,Yes,No,,,
 5,Kenichi Yoshida,Yes,Yes,No,,,
 6,Akira Ono,Yes,Yes,No,,,
 8,Jun Xu,Yes,Yes,No,,,
 9,Naibo Zhang,No,No,No,,,
-10,Mizuki Kurata-Nishimura,Yes,Yes,No,,,
+10,Mizuki Kurata-Nishimura,Yes,Yes,Yes,20250904-134448,tea,Aaako
 11,Bao-Jun Cai,Yes,Yes,No,,,
 12,Peter Pang,No,Yes,No,,,
 13,Ang Li,No,No,No,,,
@@ -24,7 +24,7 @@ ID,Name,Excursion,Banquet,Dietary Request,Time,Comment,Receptionist
 25,zhanjiang Lian,Yes,Yes,No,,,
 27,Jan Steinheimer-Froschauer,Yes,Yes,No,,,
 28,Lie-Wen Chen,Yes,Yes,No,,,
-29,Juzo ZENIHIRO,No,Yes,No,,,
+29,Juzo ZENIHIRO,No,Yes,No,20250904-134236,,Aaako
 30,zhen zhang,Yes,Yes,No,,,
 31,Asanosuke Jinno,Yes,Yes,No,,,
 32,Dawei Si,Yes,Yes,No,,,
@@ -42,7 +42,7 @@ ID,Name,Excursion,Banquet,Dietary Request,Time,Comment,Receptionist
 47,Tomoya Nakada,Yes,Yes,No,,,
 48,Nobuo Hinohara,Yes,Yes,No,,,
 50,Chisato Ruike,Yes,Yes,No,,,
-51,Tadaaki Isobe,Yes,Yes,No,,,
+51,Tadaaki Isobe,Yes,Yes,No,20250904-134553,,Asako
 52,Jerzy Lukasik,Yes,Yes,No,,,
 53,Yifei Niu,Yes,Yes,No,,,
 54,Yuto Hijikata,No,Yes,No,,,

@@ -111,20 +111,19 @@ def main():
 
     st.markdown(f"--- 現在の時刻: {datetime.now().strftime('%Y%m%d-%H%M%S')} ---")
 
-    if st.button("登録"):
+    if st.button("確認", key="main_register_button"):
         if input_id and input_id.isdigit() and int(input_id) > 0:
             user_idx = df.index[df['ID'] == input_id]
             st.session_state.user_index = user_idx[0] if not user_idx.empty else None
         else:
             st.warning("正しいIDを入力してください。")
 
-
-
+    # 登録選択のボタン
     if check_register(df, st.session_state.user_index):
         st.markdown("#### 登録を選択してください")
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("登録"):
+            if st.button("登録", key="col1_register_button"):
                 now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
                 st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
                 df.loc[st.session_state.user_index, 'Time'] = now_str
@@ -137,8 +136,8 @@ def main():
                 st.session_state.modify_mode = False
                 st.rerun()
         with col2:
-            if st.button("変更して登録"):
-                st.session_state.modify_mode = True  # ← 変更モードに切り替え
+            if st.button("変更して登録", key="col2_modify_button"):
+                st.session_state.modify_mode = True
                 st.rerun()
 
     elif st.session_state.user_index is not None:
