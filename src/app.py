@@ -70,7 +70,7 @@ def main():
 
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
-        options=MEETING_TYPES,
+        options=["Going", "Return", "Banquet", "Session"],
         index=0  # デフォルトで最初のオプションを選択
     )
 
@@ -104,7 +104,7 @@ def main():
 
     # 入力フォーム
     st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
-    input_name = st.text_input("Name")
+    input_name = st.text_input("Name", key="Name")
     selected_id = None  # 追加
 
     if input_name: 
@@ -128,14 +128,14 @@ def main():
 
     if meeting_type != "Entrance":
         st.markdown("### 🟢 登録する参加者のIDを入力してください")
-        input_id = st.text_input("参加者IDを入力してください", value=selected_id)
+        input_id = st.text_input("参加者IDを入力してください", value=selected_id, key="ID")
         
         if input_id:
             user = df[df['ID'] == int(input_id)]
             if not user.empty:
                 name = user.iloc[0]['Name']
                 st.write(f" 参加者: [{input_id}]　{name} さん")
-                comment = st.text_input("コメント（任意）")  # ← コメント欄を追加
+                comment = st.text_input("コメント（任意）", key="Comment")  # ← コメント欄を追加
             else:
                 st.error("未登録のIDです。")
                 

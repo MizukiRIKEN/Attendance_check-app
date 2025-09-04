@@ -54,8 +54,14 @@ def main():
 
     df = pd.read_csv(REGISTERED_FILE, dtype=dtype_dict)
 
+    if df.empty:
+        st.error("登録者リストが空です。")
+        return
+    
+    
+    # --- 名前で検索して選択 ---
     st.markdown("### ️🟢 登録する氏名の一部を入力してください")
-    input_name = st.text_input("Name")
+    input_name = st.text_input("Name", key="Name")
     selected_id = None  # 追加
 
     if input_name: 
@@ -98,8 +104,8 @@ def main():
     st.markdown("---")
     st.markdown("### 🟢 登録者のIDを入力して登録してください")
     # 選択されたIDがあれば自動入力
-    input_id = st.text_input("登録するID", value=selected_id if selected_id else "")
-    
+    input_id = st.text_input("登録するID", key="REGISTER_ID", value=selected_id if selected_id else "")
+        # IDが入力された場合、参加者名を表示
     if input_id:
         user = df[df['ID'] == input_id]
         if not user.empty:
@@ -134,6 +140,7 @@ def main():
                 st.write(df.loc[st.session_state.user_index])
                 st.session_state.user_index = None
                 st.session_state.modify_mode = False
+                st.session_state["reset_name"] = True
                 st.rerun()
         with col2:
             if st.button("変更して登録", key="col2_modify_button"):
@@ -183,12 +190,15 @@ def main():
         except KeyError:
             st.error("無効なキーです。")
 
-        if st.button("保存して終了"):
+        # 「終了」ボタンの処理
+        if st.button("終了"):
             df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
             df.to_csv(REGISTERED_FILE, index=False)
             st.session_state.modify_mode = False
             st.session_state.user_index = None
+            # ここで一時フラグを立てる
+            st.session_state["reset_name"] = True
             st.rerun()
 
     st.markdown("---")
@@ -204,6 +214,12 @@ def main():
             "ID": st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True)
         }
     )
+
+# 名前入力欄の直前で値をリセット
+if st.session_state.get("reset_name", False):
+    st.session_state["Name"] = ""
+    st.session_state["REGISTER_ID"] = ""
+    st.session_state["reset_name"] = False
 
 if __name__ == "__main__":
     main()

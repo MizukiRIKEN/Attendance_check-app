@@ -6,7 +6,7 @@ ID,Name,Dietary Request,Detail of Dietary Request
 6,Akira Ono,No,
 8,Jun Xu,No,
 10,Mizuki Kurata-Nishimura,No,
-11,Bao-Jun Cai,No,
+11,Bao-Jun Cai,Yes,
 12,Peter Pang,No,
 14,Yingxun Zhang,No,
 15,Sebastien Guillot,No,
@@ -30,7 +30,7 @@ ID,Name,Dietary Request,Detail of Dietary Request
 36,Guilherme Grams,No,
 37,Hui Tong,No,
 38,Yvonne Leifels,No,
-39,Akira Dohi,Yes, a severe allergy of mackerel.
+39,Akira Dohi,Yes,
 40,Shinsuke Ota,No,
 41,Pawel Danielewicz,Yes,Diabetic
 43,Jérôme Margueron,No,
@@ -63,7 +63,7 @@ ID,Name,Dietary Request,Detail of Dietary Request
 74,Hermann Wolter,No,
 75,Carlo Barbieri,No,
 76,Myeong-Hwan Mun,No,
-77,Masaaki Kimura,No,全増し
+77,Masaaki Kimura,Yes,全増し
 78,Takayuki YANO,No,
 79,Fumitaka ENDO,No,
 80,rongjun liu,No,
@@ -72,3 +72,6 @@ ID,Name,Dietary Request,Detail of Dietary Request
 84,Jeonghyeok Park,No,
 85,Tetsuo Hatsuda,No,
 86,Sherry Yennello,No,
+87,Raphaelle Demeyer,No,
+88,Tomomi Okayasu,,
+90,Asako Sakihama,,

@@ -1,4 +1,4 @@
-ORIGINAL_DATABASE = "participant_list_20250902_2.xlsx"
+ORIGINAL_DATABASE = "participant_list_20250902_3.xlsx"
 DATABASE_SHEET = "名簿"
 # 会議名
 MEETING_NAME = "NuSym25"
