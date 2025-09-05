@@ -32,7 +32,7 @@ def show_not_checked_in_participants(df,CHECKIN_FILE):
     not_checked_in_sorted = sorted([int(x) for x in not_checked_in])
     not_checked_in = set(map(str, not_checked_in_sorted))
     
-    st.markdown(f"#### {len(checked_in_ids)} 人　/　{len(registered_ids)}人中　チェックイン済み")
+    st.markdown(f"#### {len(checked_in_ids)-1} 人　/　{len(registered_ids)}人中　チェックイン済み")
     
     
     if not not_checked_in:
