@@ -24,13 +24,16 @@ def diffrentiate_checkin(cid, CHECKIN_FILE):
 def show_not_checked_in_participants(df,CHECKIN_FILE):
     if not os.path.exists(CHECKIN_FILE):
         return
-    
+
     registered_ids = set(df['ID'].astype(str).str.strip())
     checked_in_ids = set(pd.read_csv(CHECKIN_FILE, usecols=[0], names=["ID"])['ID'].astype(str).str.strip())
     
     not_checked_in = registered_ids - checked_in_ids
     not_checked_in_sorted = sorted([int(x) for x in not_checked_in])
     not_checked_in = set(map(str, not_checked_in_sorted))
+    
+    st.markdown(f"#### {len(checked_in_ids)} 人　/　{len(registered_ids)}人中　チェックイン済み")
+    
     
     if not not_checked_in:
         st.info("全ての参加者がチェックイン済みです。")
@@ -39,6 +42,10 @@ def show_not_checked_in_participants(df,CHECKIN_FILE):
         st.markdown(f"##### 残り {len(not_checked_in)} 人")
         st.write(f" {not_checked_in_sorted}")
 
+    cf = pd.read_csv(CHECKIN_FILE)
+    registerer_counts = cf["Registerer"].value_counts()
+    st.write("受付者毎の人数:")
+    st.write(registerer_counts)
     
 #%%----
 # チェックインログを表示するボタン
@@ -104,7 +111,7 @@ def main():
 
     # 入力フォーム
     st.markdown("### 🟢 登録する参加者のIDを入力してください")
-    input_id = st.text_input("参加者IDを入力してください", value=st.session_state.get('ID', ""), key="ID")
+    input_id = st.text_input("参加者IDを入力してください", value="", key="ID")
 
     if input_id:
         user = df[df['ID'] == int(input_id)]
@@ -112,6 +119,11 @@ def main():
             name = user.iloc[0]['Name']
             st.write(f" 参加者: [{input_id}]　{name} さん")
             comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
+            
+            if meeting_type == "Banquet":
+                special_request = user.iloc[0]['Dietary Request'] if 'Dietary Request' in user.columns else ""
+                if special_request == 'Yes':
+                    st.warning("この参加者は特別食をリクエストしています。")
             st.session_state['regist']= True
         else:
             st.error("未登録のIDです。")
@@ -134,55 +146,24 @@ def main():
                         with open(CHECKIN_FILE, "a") as f:
                             now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
                             f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
-                        SELECTED_ID = ""
-                        st.session_state['clear'] = True
-                        st.session_state['regist'] = False
                     else:
                         st.warning(f"{name} さんはすでにチェックイン済みです。")
-                        st.session_state['clear'] = True
-                        st.session_state['regist'] = False
                 else:
                     st.error("未登録のIDです。")
-                    st.session_state['clear'] = True
-                    st.session_state['regist'] = False
             else:
                 st.warning("IDを入力してください。")
-                st.session_state['regist'] = False
 
-
-
-
-    st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
-    input_name = st.text_input("Name", key="Name")
-
-    if input_name: 
-        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
-        if not user.empty:
-            st.dataframe(
-                user,
-                use_container_width=True,
-                hide_index=True,
-                column_config={"ID":st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True),
-                               "Name": "氏名"}
-            )
-            #st.write(user)
-            # ユーザー選択用のセレクトボックスを追加
-            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
-            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
-            if selected_user:
-                SELECTED_ID = selected_user.split(" : ")[0]  # IDのみ抽出
-        else:
-            st.warning("未登録の名前です。")
-
+        st.session_state['regist']= False
+        
 
     st.markdown("---")
     
-    show_checkin_log(CHECKIN_FILE)        
    
     show_not_checked_in_participants(df, CHECKIN_FILE)
 
-   
-    st.markdown("---") 
+    show_checkin_log(CHECKIN_FILE)
+
+    st.markdown("---")
     # --- チェックイン記録から削除する機能 ---
     if os.path.exists(CHECKIN_FILE):
         log_df = pd.read_csv(CHECKIN_FILE)
@@ -207,12 +188,30 @@ def main():
                     
     st.markdown("---")
 
+    st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
+    input_name = st.text_input("Name", key="Name")
+
+    if input_name: 
+        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+        if not user.empty:
+            st.dataframe(
+                user,
+                use_container_width=True,
+                hide_index=True,
+                column_config={"ID":st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True),
+                               "Name": "氏名"}
+            )
+            #st.write(user)
+            # ユーザー選択用のセレクトボックスを追加
+            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
+            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
+            if selected_user:
+                SELECTED_ID = selected_user.split(" : ")[0]  # IDのみ抽出
+        else:
+            st.warning("未登録の名前です。")
+
     st.markdown("##### 画面の更新")
     if st.button("画面の更新"):
-        st.session_state['delete_id'] = ""
-        st.session_state['Name'] = ""
-        st.session_state['Comment'] = ""
-        st.session_state['regist'] = False
         st.rerun()  # 画面をリロードするボタン
     
     st.markdown("---")
@@ -255,13 +254,6 @@ def main():
         )
     
     st.markdown("---")
-
-    if st.session_state.get('clear', False):
-        st.session_state['ID'] = ""
-        st.session_state['Comment'] = ""
-        st.session_state['delete_id'] = ""
-        st.session_state['clear'] = False
-        st.rerun()
     
 
 #%%----
