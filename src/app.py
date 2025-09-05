@@ -103,48 +103,21 @@ def main():
 
 
     # 入力フォーム
-    st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
-    input_name = st.text_input("Name", key="Name")
-    selected_id = None  # 追加
+    st.markdown("### 🟢 登録する参加者のIDを入力してください")
+    input_id = st.text_input("参加者IDを入力してください", value=st.session_state.get('ID', ""), key="ID")
 
-    if input_name: 
-        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+    if input_id:
+        user = df[df['ID'] == int(input_id)]
         if not user.empty:
-            st.dataframe(
-                user,
-                use_container_width=True,
-                hide_index=True,
-                column_config={"ID":st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True),
-                               "Name": "氏名"}
-            )
-            #st.write(user)
-            # ユーザー選択用のセレクトボックスを追加
-            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
-            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
-            if selected_user:
-                selected_id = selected_user.split(" : ")[0]  # IDのみ抽出
+            name = user.iloc[0]['Name']
+            st.write(f" 参加者: [{input_id}]　{name} さん")
+            comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
+            st.session_state['regist']= True
         else:
-            st.warning("未登録の名前です。")
+            st.error("未登録のIDです。")
 
-        if meeting_type != "Entrance":
-            st.markdown("### 🟢 登録する参加者のIDを入力してください")
-            input_id = st.text_input("参加者IDを入力してください", value=selected_id, key="ID")
-            
-            if input_id:
-                user = df[df['ID'] == int(input_id)]
-                if not user.empty:
-                    name = user.iloc[0]['Name']
-                    st.write(f" 参加者: [{input_id}]　{name} さん")
-                    comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
-                    st.session_state['regist']= True
-                else:
-                    st.error("未登録のIDです。")
-                    
-        else:
-            input_id = selected_id
-            comment = ""
-            
-    if st.session_state.get('regist') is True:        
+
+    if st.session_state.get('regist') is True:
         if st.button("出席確認"):
             if input_id:
                 # IDが登録者リストに存在するか確認
@@ -161,17 +134,45 @@ def main():
                         with open(CHECKIN_FILE, "a") as f:
                             now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
                             f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
+                        SELECTED_ID = ""
+                        st.session_state['clear'] = True
                         st.session_state['regist'] = False
-                        #st.rerun()  # 画面リロードで入力欄をクリア
                     else:
                         st.warning(f"{name} さんはすでにチェックイン済みです。")
+                        st.session_state['clear'] = True
                         st.session_state['regist'] = False
                 else:
                     st.error("未登録のIDです。")
+                    st.session_state['clear'] = True
                     st.session_state['regist'] = False
             else:
                 st.warning("IDを入力してください。")
                 st.session_state['regist'] = False
+
+
+
+
+    st.markdown("### ️🟢 登録する参加者の氏名の一部を入力してください")
+    input_name = st.text_input("Name", key="Name")
+
+    if input_name: 
+        user = df[df['Name'].str.contains(input_name, case=False, na=False)]
+        if not user.empty:
+            st.dataframe(
+                user,
+                use_container_width=True,
+                hide_index=True,
+                column_config={"ID":st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True),
+                               "Name": "氏名"}
+            )
+            #st.write(user)
+            # ユーザー選択用のセレクトボックスを追加
+            user_options = [f"{row['ID']} : {row['Name']}" for _, row in user.iterrows()]
+            selected_user = st.selectbox("リストから参加者を選択してください", user_options)
+            if selected_user:
+                SELECTED_ID = selected_user.split(" : ")[0]  # IDのみ抽出
+        else:
+            st.warning("未登録の名前です。")
 
 
     st.markdown("---")
@@ -188,24 +189,30 @@ def main():
         if not log_df.empty:
             st.markdown("#### ❌ 間違ったチェックインを削除")
             del_id = st.text_input("削除したい参加者IDを入力してください", key="delete_id")
-            if st.button("このIDのチェックイン記録を削除"):
-                if del_id and del_id.isdigit():
-                    before = len(log_df)
-                    log_df = log_df[log_df['ID'] != int(del_id)]
-                    after = len(log_df)
+            user = log_df[log_df['ID'] == int(del_id)] if del_id and del_id.isdigit() else pd.DataFrame()
+            name = user.iloc[0]['Name'] if not user.empty else ""
+            if not del_id or name!="":
+                st.write(f"削除対象: ID {del_id} {name} さん")
+                if st.button("チェックイン記録を削除"):
+                    if del_id and del_id.isdigit():
+                        before = len(log_df)
+                        log_df = log_df[log_df['ID'] != int(del_id)]
+                        after = len(log_df)
                     if before != after:
                         log_df.to_csv(CHECKIN_FILE, index=False)
-                        st.success(f"ID {del_id} のチェックイン記録を削除しました。")
+                        st.success(f"ID {del_id}:{name}のチェックイン記録を削除しました。")
                         #st.rerun()
-                    else:
-                        st.warning(f"ID {del_id} の記録は見つかりませんでした。")
-                else:
-                    st.warning("正しいIDを入力してください。")
+            elif del_id and del_id.isdigit() and user.empty:
+                st.warning(f"ID {del_id} の記録は見つかりませんでした。")
                     
     st.markdown("---")
 
     st.markdown("##### 画面の更新")
     if st.button("画面の更新"):
+        st.session_state['delete_id'] = ""
+        st.session_state['Name'] = ""
+        st.session_state['Comment'] = ""
+        st.session_state['regist'] = False
         st.rerun()  # 画面をリロードするボタン
     
     st.markdown("---")
@@ -248,7 +255,14 @@ def main():
         )
     
     st.markdown("---")
-   
+
+    if st.session_state.get('clear', False):
+        st.session_state['ID'] = ""
+        st.session_state['Comment'] = ""
+        st.session_state['delete_id'] = ""
+        st.session_state['clear'] = False
+        st.rerun()
+    
 
 #%%----
 if __name__ == "__main__":
