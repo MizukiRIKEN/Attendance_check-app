@@ -115,49 +115,37 @@ def main():
 
     if input_id:
         user = df[df['ID'] == int(input_id)]
-        if not user.empty:
-            name = user.iloc[0]['Name']
-            st.write(f" 参加者: [{input_id}]　{name} さん")
-            comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
+        name = user.iloc[0]['Name'] if not user.empty else None
+        if name:
+        
+            if diffrentiate_checkin(input_id,CHECKIN_FILE):
             
-            if meeting_type == "Banquet":
-                special_request = user.iloc[0]['Dietary Request'] if 'Dietary Request' in user.columns else ""
-                if special_request == 'Yes':
-                    st.warning("この参加者は特別食をリクエストしています。")
-            st.session_state['regist']= True
-        else:
+                st.success(f"参加者: [{input_id}] {name} さんを登録しますか？　✅")
+                
+                comment = st.text_input("コメント（任意）", key="Comment", value="")  # ← コメント欄を追加
+                
+                if meeting_type == "Banquet":
+                    special_request = user.iloc[0]['Dietary Request'] if 'Dietary Request' in user.columns else ""
+                    if special_request == 'Yes':
+                        st.warning("この参加者は特別食をリクエストしています。")
+                st.session_state['regist']= True    
+            else:
+                st.warning(f"{name} さんはすでにチェックイン済みです。") 
+        else:         
             st.error("未登録のIDです。")
 
-
+    
     if st.session_state.get('regist') is True:
-        if st.button("出席確認"):
-            if input_id:
-                # IDが登録者リストに存在するか確認
-                user = df[df['ID'] == int(input_id)]
-                #st.write(user)
-            
-                if not user.empty:
-                    name = user.iloc[0]['Name']
-                    st.write(f" 参加者: [{input_id}]　{name} さん")
-                
-                    if diffrentiate_checkin(input_id,CHECKIN_FILE):
-                        st.success(f"{name} さんの出席を確認しました ✅")
-                        # チェックイン記録を保存
-                        with open(CHECKIN_FILE, "a") as f:
-                            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
-                            f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
-                    else:
-                        st.warning(f"{name} さんはすでにチェックイン済みです。")
-                else:
-                    st.error("未登録のIDです。")
-            else:
-                st.warning("IDを入力してください。")
-
-        st.session_state['regist']= False
-        
+        if st.button("登録"):
+            # チェックイン記録を保存
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 秒まで
+            with open(CHECKIN_FILE, "a") as f:
+                f.write(f"{input_id},{name},{comment},{now_str},{REGISTERER}\n")
+            st.session_state['regist']= False
+            st.session_state['reset']= True
+            st.rerun()
 
     st.markdown("---")
-    
    
     show_not_checked_in_participants(df, CHECKIN_FILE)
 
@@ -254,7 +242,11 @@ def main():
         )
     
     st.markdown("---")
-    
+
+if st.session_state.get("reset") is True:
+    st.session_state['ID'] = ""
+    st.session_state['Comment']=""
+    st.session_state['reset'] = False
 
 #%%----
 if __name__ == "__main__":
