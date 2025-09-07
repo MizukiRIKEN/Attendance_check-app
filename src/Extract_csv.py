@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import sys
-import xlwings as xw
 from config import *
 
 # Excelファイルからシートを読み込む

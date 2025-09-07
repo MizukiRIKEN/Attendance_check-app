@@ -216,7 +216,7 @@ def main():
     )
 
 # 名前入力欄の直前で値をリセット
-if st.session_state.get("reset_name", False):
+if st.session_state.get("reset_name", False) is True:
     st.session_state["Name"] = ""
     st.session_state["REGISTER_ID"] = ""
     st.session_state["reset_name"] = False
