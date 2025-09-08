@@ -181,6 +181,8 @@ def main():
             update = st.button("更新", key="update_button")
             if update and new_value:
                 df.loc[st.session_state.user_index, selected_key] = new_value
+                org_comment = df.loc[st.session_state.user_index, 'Comment']
+                df.loc[st.session_state.user_index, 'Comment'] = f"{org_comment} >> {selected_key}:{new_value}"
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
                 df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
                 df.to_csv(REGISTERED_FILE, index=False)

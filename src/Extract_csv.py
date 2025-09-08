@@ -27,8 +27,6 @@ paied_df = df[df['Name'].notnull() & (df["Registration state"]!="Withdrawn")]
 #paied_df = df[df['ID'].notnull()]
 
 for key in MEETING_TYPES:
-    REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}{key}.csv"
-    CHECKIN_FILE = f"{DIR_OUTPUT}/{CHECKIN_HEAD}{key}.csv"
 
     # ExcursionとNameの列がnullでない行を抽出
     if key == "Entrance" or key == "Session":
@@ -47,9 +45,12 @@ for key in MEETING_TYPES:
         id_name_df['Time'] = ''
         id_name_df['Comment'] = ''
         id_name_df['Receptionist'] = ''
+        key = "Updated_Session"        
     else:
         id_name_df = filtered_df[['ID', 'Name']]
     
+    REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}{key}.csv"
+    #CHECKIN_FILE = f"{DIR_OUTPUT}/{CHECKIN_HEAD}{key}.csv"
     id_name_df.to_csv(REGISTERED_FILE, index=False)
     print(f"{REGISTERED_FILE} に {len(id_name_df)} 人の登録者がいます。")
 
