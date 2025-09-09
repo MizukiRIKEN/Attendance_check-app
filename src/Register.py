@@ -203,6 +203,8 @@ def main():
             st.session_state["reset_name"] = True
             st.rerun()
 
+    unregistered = df[df['Time']=='']
+    st.markdown(f'残り　{len(unregistered)}　名')
     st.markdown("---")
     
     if st.button("画面の更新"):
