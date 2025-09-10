@@ -24,7 +24,7 @@ if FROM_EXEL:
         print("登録者リストが空です。")
         sys.exit()
         
-CHECKED_LIST = "2025-09-09T05-26_export.csv"
+CHECKED_LIST = "2025-09-10T01-37_export.csv"
 df = pd.read_csv(CHECKED_LIST, dtype=dtype_dict)
 if df.empty:
     print("出席者リストが空です。")

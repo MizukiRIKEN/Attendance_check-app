@@ -77,7 +77,7 @@ def main():
 
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
-        options=["Going", "Return", "Banquet", "Session"],
+        options=["Going", "Ropeway", "Return", "Banquet", "Session"],
         index=0  # デフォルトで最初のオプションを選択
     )
 
