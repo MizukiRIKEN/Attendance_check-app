@@ -8,8 +8,6 @@ CHECKIN_HEAD = MEETING_NAME+"_Chkin_fin_"
 
 #リストを選択する
 MEETING_TYPES = [
-    "Entrance",
-    "Session",
     "Excursion",
     "Ropeway",
     "Going",

@@ -24,6 +24,8 @@ def check_register(df, user_idx):
         else:
             st.warning(f"{name} さんはすでに登録済みです。")
             return False
+        
+    user_idx = None
     return False
 
 
@@ -102,55 +104,43 @@ def main():
     st.markdown("---")
     st.markdown("### 🟢 登録者のIDを入力して登録してください")
     # 選択されたIDがあれば自動入力
-    input_id = st.text_input("登録するID", key="REGISTER_ID", value=selected_id if selected_id else "")
+    input_id = st.text_input("", key="REGISTER_ID", value=selected_id if selected_id else "")
         # IDが入力された場合、参加者名を表示
-    if input_id:
-        user = df[df['ID'] == input_id]
-        if not user.empty:
-            name = user.iloc[0]['Name']
-            st.write(f" 参加者: [{input_id}]　{name} さん")
-
-        else:
-            st.error("未登録のIDです。")
-
-    st.markdown(f"--- 現在の時刻: {datetime.now().strftime('%Y%m%d-%H%M%S')} ---")
-
-    if st.button("確認", key="main_register_button"):
-        if input_id and input_id.isdigit() and int(input_id) > 0:
-            user_idx = df.index[df['ID'] == input_id]
-            st.session_state.user_index = user_idx[0] if not user_idx.empty else None
-        else:
-            st.warning("正しいIDを入力してください。")
+    if input_id and input_id.isdigit() and int(input_id) > 0:
+        user_idx = df.index[df['ID'] == input_id]
+        st.session_state.user_index = user_idx[0] if not user_idx.empty else None
 
     # 登録選択のボタン
-    if check_register(df, st.session_state.user_index):
-        st.markdown("#### 登録を選択してください")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("登録", key="col1_register_button"):
-                now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
-                st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
-                df.loc[st.session_state.user_index, 'Time'] = now_str
+        if check_register(df, st.session_state.user_index):
+            st.markdown("#### 登録を選択してください")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("登録", key="col1_register_button"):
+                    now_str = datetime.now().strftime("%Y%m%d-%H%M%S")
+                    st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
+                    df.loc[st.session_state.user_index, 'Time'] = now_str
+                    df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
+                    df.to_csv(PARTICIPANT_LIST, index=False)
+                    st.success(f"{input_id} を登録しました。 ✅")
+                    st.write("登録後の情報:")
+                    st.write(df.loc[st.session_state.user_index])
+                    st.session_state.user_index = None
+                    st.session_state.modify_mode = False
+                    st.session_state["reset_name"] = True
+                    st.rerun()
+            with col2:
+                if st.button("変更して登録", key="col2_modify_button"):
+                    st.session_state.modify_mode = True
+                    st.rerun()
+        
+        elif st.session_state.user_index is not None:
+            if st.button("登録を修正"):
+                df.loc[st.session_state.user_index, 'Time'] = None
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
                 df.to_csv(PARTICIPANT_LIST, index=False)
-                st.success(f"{input_id} を登録しました。 ✅")
-                st.write("登録後の情報:")
-                st.write(df.loc[st.session_state.user_index])
-                st.session_state.user_index = None
-                st.session_state.modify_mode = False
-                st.session_state["reset_name"] = True
                 st.rerun()
-        with col2:
-            if st.button("変更して登録", key="col2_modify_button"):
-                st.session_state.modify_mode = True
-                st.rerun()
-
-    elif st.session_state.user_index is not None:
-        if st.button("登録を修正"):
-            df.loc[st.session_state.user_index, 'Time'] = None
-            df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-            df.to_csv(PARTICIPANT_LIST, index=False)
-            st.rerun()
+        elif st.session_state.user_index is None:
+            st.error("有効なIDを入力してください。")
 
     if st.session_state.get("modify_mode", False) and st.session_state.user_index is not None:
         rguser = df.loc[st.session_state.user_index]
@@ -201,8 +191,9 @@ def main():
             st.session_state["reset_name"] = True
             st.rerun()
 
-    unregistered = df[df['Time']=='']
-    st.markdown(f'残り　{len(unregistered)}　名')
+    none_count = df['Time'].isna().sum() + (df['Time'] == '').sum()
+    st.markdown(f"未登録の人数: {none_count} 名")
+    
     st.markdown("---")
     
     if st.button("画面の更新"):
@@ -216,6 +207,7 @@ def main():
             "ID": st.column_config.Column("ID", disabled=True, required=True, width="small", pinned=True)
         }
     )
+
 
 # 名前入力欄の直前で値をリセット
 if st.session_state.get("reset_name", False) is True:

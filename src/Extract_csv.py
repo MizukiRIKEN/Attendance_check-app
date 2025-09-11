@@ -9,6 +9,10 @@ def extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, CHECKED_LIST):
     if not os.path.exists(ORIGINAL_DATABASE):
         print(f"元データファイルが見つかりません: {ORIGINAL_DATABASE}")
         return False
+    
+    if CHECKED_LIST and os.path.exists(CHECKED_LIST):
+        print(f"出席者リストファイルはすでに存在します: {CHECKED_LIST}")
+        return False
           
     df = pd.read_excel(ORIGINAL_DATABASE, sheet_name=DATABASE_SHEET)
 
@@ -72,7 +76,7 @@ def main(FROM_EXCEL):
     ORIGINAL_DATABASE = "participant_list_20250902_4.xlsx"
     DATABASE_SHEET = "名簿"
 
-    CHECKED_LIST = "2025-09-10T01-37_export.csv"
+    CHECKED_LIST = "output/2025-09-11T14-29_export.csv"
 
     if FROM_EXCEL:
         if not extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, PARTICIPANT_LIST):
@@ -85,4 +89,11 @@ def main(FROM_EXCEL):
 
 #%%----
 if __name__ == "__main__":
-    main(FROM_EXCEL=True)
+    # コマンドライン引数で切り替え
+    # 例: python Extract_csv.py 1  → Excelから
+    #     python Extract_csv.py 0  → 既存CSVから
+    if len(sys.argv) > 1:
+        flag = bool(int(sys.argv[1]))
+    else:
+        flag = True  # デフォルトはExcelから
+    main(flag)
