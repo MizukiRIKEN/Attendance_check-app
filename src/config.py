@@ -1,5 +1,3 @@
-ORIGINAL_DATABASE = "participant_list_20250902_4.xlsx"
-DATABASE_SHEET = "名簿"
 # 会議名
 MEETING_NAME = "NuSym25"
 DIR_OUTPUT = 'output'
