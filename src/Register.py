@@ -6,8 +6,6 @@ from datetime import datetime
 import os
 from config import *
 
-REGISTERED_FILE = f"{DIR_OUTPUT}/{REGISTERED_HEAD}Session.csv"
-
 #%%
 def check_register(df, user_idx):
     if user_idx is None or user_idx < 0 or user_idx >= len(df):
@@ -48,11 +46,11 @@ def main():
         st.warning("受付者の名前を入力してください。")
         return
     
-    if not os.path.exists(REGISTERED_FILE):
-        st.error(f"登録者リストファイルが見つかりません: {REGISTERED_FILE}")
+    if not os.path.exists(PARTICIPANT_LIST):
+        st.error(f"登録者リストファイルが見つかりません: {PARTICIPANT_LIST}")
         return  
 
-    df = pd.read_csv(REGISTERED_FILE, dtype=dtype_dict)
+    df = pd.read_csv(PARTICIPANT_LIST, dtype=dtype_dict)
 
     if df.empty:
         st.error("登録者リストが空です。")
@@ -89,7 +87,7 @@ def main():
                 new_user['Comment'] = ""
                 new_user['Receptionist'] = RECEPTIONIST
                 df = pd.concat([df, pd.DataFrame([new_user])], ignore_index=True)
-                df.to_csv(REGISTERED_FILE, index=False)
+                df.to_csv(PARTICIPANT_LIST, index=False)
                 st.success(f"{input_new_name} さんを新規登録しました。 ✅")
                 st.write("登録後の情報:")
                 st.write(df.loc[df['Name'] == input_new_name])
@@ -134,7 +132,7 @@ def main():
                 st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
                 df.loc[st.session_state.user_index, 'Time'] = now_str
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-                df.to_csv(REGISTERED_FILE, index=False)
+                df.to_csv(PARTICIPANT_LIST, index=False)
                 st.success(f"{input_id} を登録しました。 ✅")
                 st.write("登録後の情報:")
                 st.write(df.loc[st.session_state.user_index])
@@ -151,7 +149,7 @@ def main():
         if st.button("登録を修正"):
             df.loc[st.session_state.user_index, 'Time'] = None
             df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-            df.to_csv(REGISTERED_FILE, index=False)
+            df.to_csv(PARTICIPANT_LIST, index=False)
             st.rerun()
 
     if st.session_state.get("modify_mode", False) and st.session_state.user_index is not None:
@@ -185,7 +183,7 @@ def main():
                 df.loc[st.session_state.user_index, 'Comment'] = f"{org_comment} >> {selected_key}:{new_value}"
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
                 df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
-                df.to_csv(REGISTERED_FILE, index=False)
+                df.to_csv(PARTICIPANT_LIST, index=False)
                 st.success(f"{name} さんの登録内容を更新しました。 ✅")
                 st.write("変更後の情報:")
                 st.write(df.loc[st.session_state.user_index])
@@ -196,7 +194,7 @@ def main():
         if st.button("終了"):
             df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-            df.to_csv(REGISTERED_FILE, index=False)
+            df.to_csv(PARTICIPANT_LIST, index=False)
             st.session_state.modify_mode = False
             st.session_state.user_index = None
             # ここで一時フラグを立てる
