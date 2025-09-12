@@ -104,7 +104,7 @@ def main():
     st.markdown("---")
     st.markdown("### 🟢 登録者のIDを入力して登録してください")
     # 選択されたIDがあれば自動入力
-    input_id = st.text_input("", key="REGISTER_ID", value=selected_id if selected_id else "")
+    input_id = st.text_input("ID", key="REGISTER_ID", value=selected_id if selected_id else "")
         # IDが入力された場合、参加者名を表示
     if input_id and input_id.isdigit() and int(input_id) > 0:
         user_idx = df.index[df['ID'] == input_id]
@@ -191,9 +191,11 @@ def main():
             st.session_state["reset_name"] = True
             st.rerun()
 
-    none_count = df['Time'].isna().sum() + (df['Time'] == '').sum()
-    st.markdown(f"未登録の人数: {none_count} 名")
-    
+    registered_count = df['Time'].notna().sum()
+    st.markdown(f"登録済みの人数: {registered_count} 名/{len(df)} 名")
+    unregistered_count = df['Time'].isna().sum() + (df['Time'] == '').sum()
+    st.markdown(f"未登録の人数: {unregistered_count} 名")
+
     st.markdown("---")
     
     if st.button("画面の更新"):
