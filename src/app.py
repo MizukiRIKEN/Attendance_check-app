@@ -77,7 +77,7 @@ def main():
 
     meeting_type = st.selectbox(
         "リストの種類を選択してください",
-        options=["Going", "Ropeway", "Return", "Banquet", "Session"],
+        options=MEETING_TYPES,
         index=0  # デフォルトで最初のオプションを選択
     )
 
@@ -131,8 +131,10 @@ def main():
                 st.session_state['regist']= True    
             else:
                 st.warning(f"{name} さんはすでにチェックイン済みです。") 
+                st.session_state['regist']= False
         else:         
             st.error("未登録のIDです。")
+            st.session_state['regist']= False
 
     
     if st.session_state.get('regist') is True:

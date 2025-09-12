@@ -4,14 +4,14 @@ import sys
 from config import *
 
 
-def extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, CHECKED_LIST):
+def extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, PARTICIPANT_LIST):
     # Excelファイルからシートを読み込む
     if not os.path.exists(ORIGINAL_DATABASE):
-        print(f"元データファイルが見つかりません: {ORIGINAL_DATABASE}")
+        print(f"元のEXCELファイルが見つかりません: {ORIGINAL_DATABASE}")
         return False
     
-    if CHECKED_LIST and os.path.exists(CHECKED_LIST):
-        print(f"出席者リストファイルはすでに存在します: {CHECKED_LIST}")
+    if PARTICIPANT_LIST and os.path.exists(PARTICIPANT_LIST):
+        print(f"出席者リストファイルはすでに存在します: {PARTICIPANT_LIST}")
         return False
           
     df = pd.read_excel(ORIGINAL_DATABASE, sheet_name=DATABASE_SHEET)
@@ -21,18 +21,19 @@ def extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, CHECKED_LIST):
         return False
 
 
-    attend_df = df[df['Name'].notnull() & (df["Registration state"]!="Withdrawn")]
+    attend_df = df[df['Name'].notnull() & (df[REGISTRATION_STATUS_KEYS[0]] != REGISTRATION_STATUS_KEYS[1])]
 
-    id_name_df = attend_df[['ID', 'Name','Excursion','Banquet','Dietary Request','Detail of Dietary Request']].copy()  # ← .copy() を追加
+    id_name_df = attend_df[REGISTRATION_COLUMNS].copy()  # ← .copy() を追加
     id_name_df['Time'] = ''
     id_name_df['Comment'] = ''
     id_name_df['Receptionist'] = ''
     
-    id_name_df.to_csv(CHECKED_LIST, index=False)
-    print(f"{CHECKED_LIST} に {len(id_name_df)} 人の登録者がいます。")
+    id_name_df.to_csv(PARTICIPANT_LIST, index=False)
+    print(f"{PARTICIPANT_LIST} に {len(id_name_df)} 人の登録者がいます。")
 
     return True
-
+#%%%
+#　チェックインしたリストから参加確認リストを作成します。
 def extract_checking_list(CHECKED_LIST):
     if not os.path.exists(CHECKED_LIST):
         print(f"出席者リストファイルが見つかりません: {CHECKED_LIST}")
@@ -73,10 +74,6 @@ def extract_checking_list(CHECKED_LIST):
 
 #%%
 def main(FROM_EXCEL):
-    ORIGINAL_DATABASE = "participant_list_20250902_4.xlsx"
-    DATABASE_SHEET = "名簿"
-
-    CHECKED_LIST = "output/2025-09-11T14-29_export.csv"
 
     if FROM_EXCEL:
         if not extract_registration_list(ORIGINAL_DATABASE, DATABASE_SHEET, PARTICIPANT_LIST):

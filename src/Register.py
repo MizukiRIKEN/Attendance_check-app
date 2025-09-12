@@ -47,18 +47,28 @@ def main():
     if not RECEPTIONIST:
         st.warning("受付者の名前を入力してください。")
         return
-    
-    if not os.path.exists(PARTICIPANT_LIST):
-        st.error(f"登録者リストファイルが見つかりません: {PARTICIPANT_LIST}")
-        return  
-
-    df = pd.read_csv(PARTICIPANT_LIST, dtype=dtype_dict)
+ 
+    if not os.path.exists(CHECKED_LIST) and os.path.exists(PARTICIPANT_LIST):
+        st.info(f"参加者リストファイルを読み込みます: {PARTICIPANT_LIST}")
+        df = pd.read_csv(PARTICIPANT_LIST, dtype=dtype_dict)
+        df['Time'] = ''
+        df['Comment'] = ''
+        df['Receptionist'] = ''
+        df.to_csv(CHECKED_LIST, index=False)
+        st.info(f"登録者リストをコピーして {CHECKED_LIST} を作成しました。")
+        df = pd.read_csv(CHECKED_LIST, dtype=dtype_dict)
+    elif os.path.exists(CHECKED_LIST):
+        st.info(f"登録者リストファイルを読み込みます: {CHECKED_LIST}")
+        df = pd.read_csv(CHECKED_LIST, dtype=dtype_dict)
+    else:
+        st.error(f"登録者リストファイルが見つかりません: {CHECKED_LIST} または {PARTICIPANT_LIST}")
+        return      
 
     if df.empty:
         st.error("登録者リストが空です。")
         return
-    
-    
+        
+
     # --- 名前で検索して選択 ---
     st.markdown("### ️🟢 登録する氏名の一部を入力してください")
     input_name = st.text_input("Name", key="Name")
@@ -89,7 +99,7 @@ def main():
                 new_user['Comment'] = ""
                 new_user['Receptionist'] = RECEPTIONIST
                 df = pd.concat([df, pd.DataFrame([new_user])], ignore_index=True)
-                df.to_csv(PARTICIPANT_LIST, index=False)
+                df.to_csv(CHECKED_LIST, index=False)
                 st.success(f"{input_new_name} さんを新規登録しました。 ✅")
                 st.write("登録後の情報:")
                 st.write(df.loc[df['Name'] == input_new_name])
@@ -120,7 +130,7 @@ def main():
                     st.write(f"{df.loc[st.session_state.user_index]['Name']} さんの登録を変更せずに保存します")
                     df.loc[st.session_state.user_index, 'Time'] = now_str
                     df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-                    df.to_csv(PARTICIPANT_LIST, index=False)
+                    df.to_csv(CHECKED_LIST, index=False)
                     st.success(f"{input_id} を登録しました。 ✅")
                     st.write("登録後の情報:")
                     st.write(df.loc[st.session_state.user_index])
@@ -137,7 +147,7 @@ def main():
             if st.button("登録を修正"):
                 df.loc[st.session_state.user_index, 'Time'] = None
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-                df.to_csv(PARTICIPANT_LIST, index=False)
+                df.to_csv(CHECKED_LIST, index=False)
                 st.rerun()
         elif st.session_state.user_index is None:
             st.error("有効なIDを入力してください。")
@@ -151,7 +161,7 @@ def main():
 
         try:
         # 項目ごとに入力欄を表示
-            if selected_key in ['Excursion','Banquet', 'Dietary Request']:
+            if selected_key in Checking_keys:
                 options = ['Yes', 'No']
                 current_value = str(rguser[selected_key])
                 if current_value in options:
@@ -173,7 +183,7 @@ def main():
                 df.loc[st.session_state.user_index, 'Comment'] = f"{org_comment} >> {selected_key}:{new_value}"
                 df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
                 df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
-                df.to_csv(PARTICIPANT_LIST, index=False)
+                df.to_csv(CHECKED_LIST, index=False)
                 st.success(f"{name} さんの登録内容を更新しました。 ✅")
                 st.write("変更後の情報:")
                 st.write(df.loc[st.session_state.user_index])
@@ -184,7 +194,7 @@ def main():
         if st.button("終了"):
             df.loc[st.session_state.user_index, 'Time'] = datetime.now().strftime("%Y%m%d-%H%M%S")
             df.loc[st.session_state.user_index, 'Receptionist'] = RECEPTIONIST
-            df.to_csv(PARTICIPANT_LIST, index=False)
+            df.to_csv(CHECKED_LIST, index=False)
             st.session_state.modify_mode = False
             st.session_state.user_index = None
             # ここで一時フラグを立てる
